@@ -115,7 +115,7 @@ class _TodoState extends State<Todo> {
           ),
         ),
         SizedBox(height: 0.5, child: Container(color: Colors.grey)),
-        SizedBox(height: 5),
+        SizedBox(height: 10),
       ],
     ));
   }
