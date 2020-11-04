@@ -31,7 +31,7 @@ class _TodosPageState extends State<TodosPage> {
     isAr = widget.isAr ?? false;
     category = widget.category ?? 'main'.hashCode;
     super.initState();
-    getTodosAndDones(widget.category);
+    getTodosAndDones(category);
     welcomeMsg = widget.title ?? (isAr ? 'مدير المهام' : 'Todo List');
   }
 
@@ -110,7 +110,7 @@ class _TodosPageState extends State<TodosPage> {
       );
 
       DBWrapper.sharedInstance.addTodo(todo);
-      getTodosAndDones(widget.category);
+      getTodosAndDones(category);
     }
 
     Utils.hideKeyboard(context);
@@ -119,16 +119,16 @@ class _TodosPageState extends State<TodosPage> {
 
   void markTodoAsDone({@required int pos}) {
     DBWrapper.sharedInstance.markTodoAsDone(todos[pos]);
-    getTodosAndDones(widget.category);
+    getTodosAndDones(category);
   }
 
   void markDoneAsTodo({@required int pos}) {
     DBWrapper.sharedInstance.markDoneAsTodo(dones[pos]);
-    getTodosAndDones(widget.category);
+    getTodosAndDones(category);
   }
 
   void deleteTask({@required Model.Todo todo}) {
     DBWrapper.sharedInstance.deleteTodo(todo);
-    getTodosAndDones(widget.category);
+    getTodosAndDones(category);
   }
 }
