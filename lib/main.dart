@@ -9,18 +9,18 @@ import 'utils/utils.dart';
 bool isAr = false;
 int category = 'main'.hashCode;
 
-class HomeScreen extends StatefulWidget {
+class TodosPage extends StatefulWidget {
   final String title;
   final bool isAr;
   final int category;
 
-  const HomeScreen({Key key, this.title, this.isAr: false, this.category}) : super(key: key);
+  const TodosPage({Key key, this.title, this.isAr: false, this.category}) : super(key: key);
 
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _TodosPageState createState() => _TodosPageState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _TodosPageState extends State<TodosPage> {
   String welcomeMsg;
   List<Model.Todo> todos;
   List<Model.Todo> dones;
