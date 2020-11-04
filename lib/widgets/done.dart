@@ -86,10 +86,8 @@ class _DoneState extends State<Done> {
             ),
           ),
         ),
-        SizedBox(
-          height: 0.5,
-          child: Container(color: Colors.white54),
-        ),
+        SizedBox(height: 0.5, child: Container(color: Colors.white54)),
+        SizedBox(height: 2),
       ],
     ));
   }
