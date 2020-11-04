@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_todos/utils/colors.dart';
+import '../utils/colors.dart';
 
 enum kMoreOptionsKeys {
   clearAll,

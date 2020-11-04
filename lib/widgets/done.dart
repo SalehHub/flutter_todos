@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_todos/widgets/shared.dart';
-import 'package:flutter_todos/model/model.dart' as Model;
-import 'package:flutter_todos/utils/colors.dart';
-
+import '../model/model.dart' as Model;
 import '../main.dart';
+import '../utils/colors.dart';
+import 'shared.dart';
 
 class Done extends StatefulWidget {
   final Function onTap;

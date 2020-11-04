@@ -1,5 +1,5 @@
-import 'package:flutter_todos/model/model.dart';
-import 'package:flutter_todos/model/db.dart';
+import '../model/model.dart';
+import '../model/db.dart';
 
 class DBWrapper {
   static final DBWrapper sharedInstance = DBWrapper._();

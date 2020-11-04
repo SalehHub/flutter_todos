@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_todos/widgets/task_input.dart';
-import 'package:flutter_todos/widgets/todo.dart';
-import 'package:flutter_todos/widgets/done.dart';
-import 'package:flutter_todos/model/model.dart' as Model;
-import 'package:flutter_todos/model/db_wrapper.dart';
-import 'package:flutter_todos/utils/utils.dart';
-import 'package:flutter_todos/widgets/popup.dart';
+import 'widgets/task_input.dart';
+import 'widgets/todo.dart';
+import 'widgets/done.dart';
+import 'model/model.dart' as Model;
+import 'model/db_wrapper.dart';
+import 'utils/utils.dart';
 
 bool isAr = false;
-int category;
+int category = 'main'.hashCode;
 
 class HomeScreen extends StatefulWidget {
   final String title;
   final bool isAr;
   final int category;
 
-  const HomeScreen({Key key, @required this.title, this.isAr: false, @required this.category}) : super(key: key);
+  const HomeScreen({Key key, this.title, this.isAr: false, this.category}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -29,11 +28,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    isAr = widget.isAr;
-    category = widget.category;
+    isAr = widget.isAr ?? false;
+    category = widget.category ?? 'main'.hashCode;
     super.initState();
     getTodosAndDones(widget.category);
-    welcomeMsg = widget.title;
+    welcomeMsg = widget.title ?? (isAr ? 'مدير المهام' : 'Todo List');
   }
 
   @override
