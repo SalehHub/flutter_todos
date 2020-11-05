@@ -30,48 +30,51 @@ class _TodoState extends State<Todo> {
         Card(
           margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           color: Colors.grey[800],
-          child: Column(
-            children: <Widget>[
-              SizedBox(height: 50),
-              if (widget.todos == null || widget?.todos?.length == 0)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                  child: Center(
-                    child: Text(
-                      isAr ? 'استخدم مربع النص بالأعلى للبدأ بإضافة المهام' : 'Use the above text box to start adding new tasks',
-                      style: TextStyle(color: Colors.white),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom:15.0),
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 50),
+                if (widget.todos == null || widget?.todos?.length == 0)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                    child: Center(
+                      child: Text(
+                        isAr ? 'استخدم مربع النص بالأعلى للبدأ بإضافة المهام' : 'Use the above text box to start adding new tasks',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
-                ),
-              if (widget.todos != null && widget.todos.length > 0)
-                for (int i = 0; i < widget.todos.length; ++i)
-                  AnimatedOpacity(
-                    curve: Curves.fastOutSlowIn,
-                    opacity: taskPosition != i
-                        ? 1.0
-                        : showCompletedTaskAnimation
-                            ? 0
-                            : 1,
-                    duration: Duration(seconds: 1),
-                    child: getTaskItem(
-                      widget.todos[i].title,
-                      index: i,
-                      onTap: () {
-                        setState(() {
-                          taskPosition = i;
-                          showCompletedTaskAnimation = true;
-                        });
-                        Future.delayed(
-                          Duration(milliseconds: animationMilliseconds),
-                        ).then((value) {
-                          taskPosition = NoTask;
-                          showCompletedTaskAnimation = false;
-                          widget.onTap(pos: i);
-                        });
-                      },
+                if (widget.todos != null && widget.todos.length > 0)
+                  for (int i = 0; i < widget.todos.length; ++i)
+                    AnimatedOpacity(
+                      curve: Curves.fastOutSlowIn,
+                      opacity: taskPosition != i
+                          ? 1.0
+                          : showCompletedTaskAnimation
+                              ? 0
+                              : 1,
+                      duration: Duration(seconds: 1),
+                      child: getTaskItem(
+                        widget.todos[i].title,
+                        index: i,
+                        onTap: () {
+                          setState(() {
+                            taskPosition = i;
+                            showCompletedTaskAnimation = true;
+                          });
+                          Future.delayed(
+                            Duration(milliseconds: animationMilliseconds),
+                          ).then((value) {
+                            taskPosition = NoTask;
+                            showCompletedTaskAnimation = false;
+                            widget.onTap(pos: i);
+                          });
+                        },
+                      ),
                     ),
-                  ),
-            ],
+              ],
+            ),
           ),
         ),
         SharedWidget.getCardHeader(context: context, text: isAr ? 'المهام' : 'TO DO', customFontSize: 16),
@@ -96,7 +99,7 @@ class _TodoState extends State<Todo> {
               child: Row(
                 children: <Widget>[
                   Container(
-                    margin: EdgeInsets.only(top: 5),
+                    margin: EdgeInsets.only(top: 0),
                     width: 7,
                     decoration: BoxDecoration(
                       color: TodosColor.sharedInstance.leadingTaskColor(index),
@@ -115,7 +118,7 @@ class _TodoState extends State<Todo> {
           ),
         ),
         SizedBox(height: 0.5, child: Container(color: Colors.grey)),
-        SizedBox(height: 10),
+        SizedBox(height: 0),
       ],
     ));
   }

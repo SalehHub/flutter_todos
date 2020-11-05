@@ -23,27 +23,30 @@ class _DoneState extends State<Done> {
         Card(
           margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           color: Colors.grey[600],
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: 50,
-              ),
-              if (widget.dones == null) Container(height: 10),
-              if (widget.dones != null && widget.dones.length == 0)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                  child: Center(child: Text(isAr ? 'لايوجد مهام منجزة' : 'No done tasks', style: TextStyle(color: Colors.white))),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom:15.0),
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 50,
                 ),
-              if (widget.dones != null && widget.dones.length > 0)
-                for (int i = widget.dones.length - 1; i >= 0; --i)
-                  getTaskItem(
-                    widget.dones[i].title,
-                    index: i,
-                    onTap: () {
-                      widget.onTap(pos: i);
-                    },
+                if (widget.dones == null) Container(height: 10),
+                if (widget.dones != null && widget.dones.length == 0)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                    child: Center(child: Text(isAr ? 'لايوجد مهام منجزة' : 'No done tasks', style: TextStyle(color: Colors.white))),
                   ),
-            ],
+                if (widget.dones != null && widget.dones.length > 0)
+                  for (int i = widget.dones.length - 1; i >= 0; --i)
+                    getTaskItem(
+                      widget.dones[i].title,
+                      index: i,
+                      onTap: () {
+                        widget.onTap(pos: i);
+                      },
+                    ),
+              ],
+            ),
           ),
         ),
         SharedWidget.getCardHeader(
@@ -87,7 +90,7 @@ class _DoneState extends State<Done> {
           ),
         ),
         SizedBox(height: 0.5, child: Container(color: Colors.white54)),
-        SizedBox(height: 10),
+        SizedBox(height: 0),
       ],
     ));
   }
