@@ -39,6 +39,7 @@ class _TodosPageState extends State<TodosPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        brightness: Theme.of(context).brightness,
         elevation: 0,
         //actions: [Popup(getTodosAndDones: getTodosAndDones)],
         centerTitle: true,
