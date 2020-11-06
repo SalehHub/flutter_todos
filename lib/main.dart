@@ -31,6 +31,7 @@ class _TodosPageState extends State<TodosPage> {
 
   TasksList tasksList;
   ListDetails listDetails;
+  List<Task> tasks;
   Api api;
 
   bool loading = true;
@@ -63,16 +64,10 @@ class _TodosPageState extends State<TodosPage> {
 
   Future getTasks(String listId) async {
     listDetails = await api.getTasks(listId);
+    tasks = listDetails.tasks;
 
-    todos = listDetails?.needsAction
-        ?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))
-        ?.toList();
-    dones =
-        listDetails?.completed?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))?.toList();
+    updateTasksState(listId);
 
-    if (mounted) {
-      setState(() {});
-    }
     // listDetails?.tasks?.forEach((e) {
     //   print(e.title);
     //   print(e.position);
@@ -93,6 +88,21 @@ class _TodosPageState extends State<TodosPage> {
     //   print(e.position);
     //   print(e.isCompleted);
     // });
+  }
+
+  void updateTasksState(String listId) {
+    todos = tasks
+        ?.where((element) => element.isCompleted == false)
+        ?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))
+        ?.toList();
+    dones = tasks
+        ?.where((element) => element.isCompleted == true)
+        ?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))
+        ?.toList();
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future getLists() async {
@@ -237,19 +247,40 @@ class _TodosPageState extends State<TodosPage> {
 
   Future<void> markTodoAsDone({@required int pos, @required String selfLink}) async {
     DBWrapper.sharedInstance.markTodoAsDone(todos[pos]);
-    await api.completeTask(selfLink);
-    await getTodosAndDones(listId);
+    api.completeTask(selfLink);
+
+    Task task = tasks.firstWhere((element) => element.selfLink == selfLink);
+    task.status = 'completed';
+    int index = tasks.indexWhere((element) => element.selfLink == selfLink);
+    tasks.removeWhere((element) => element.selfLink == selfLink);
+    tasks.insert(index, task);
+
+    updateTasksState(listId);
+
+    //await getTodosAndDones(listId);
   }
 
   Future<void> markDoneAsTodo({@required int pos, @required String selfLink}) async {
     DBWrapper.sharedInstance.markDoneAsTodo(dones[pos]);
-    await api.uncompleteTask(selfLink);
-    await getTodosAndDones(listId);
+    api.uncompleteTask(selfLink);
+
+    Task task = tasks.firstWhere((element) => element.selfLink == selfLink);
+    task.status = 'needsAction';
+    int index = tasks.indexWhere((element) => element.selfLink == selfLink);
+    tasks.removeWhere((element) => element.selfLink == selfLink);
+    tasks.insert(index, task);
+
+    updateTasksState(listId);
+
+    //await getTodosAndDones(listId);
   }
 
   Future<void> deleteTask({@required Model.Todo todo, @required String selfLink}) async {
     DBWrapper.sharedInstance.deleteTodo(todo);
-    await api.deleteTask(selfLink);
-    await getTodosAndDones(listId);
+    api.deleteTask(selfLink);
+
+    tasks.removeWhere((element) => element.selfLink == selfLink);
+    updateTasksState(listId);
+    //await getTodosAndDones(listId);
   }
 }
