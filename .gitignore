@@ -1,0 +1,5 @@
+
+.packages
+.flutter-plugins-dependencies
+.flutter-plugins
+.dart_tool/package_config.json

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+
 import 'api.dart';
+import 'model/db_wrapper.dart';
+import 'model/model.dart' as Model;
 import 'models.dart';
+import 'utils/utils.dart';
+import 'widgets/done.dart';
 import 'widgets/task_input.dart';
 import 'widgets/todo.dart';
-import 'widgets/done.dart';
-import 'model/model.dart' as Model;
-import 'model/db_wrapper.dart';
-import 'utils/utils.dart';
 
 bool isAr = false;
 String listId = 'main';
@@ -53,10 +54,11 @@ class _TodosPageState extends State<TodosPage> {
     }
 
     await getTodosAndDones(listId);
-
-    setState(() {
-      loading = false;
-    });
+    if (mounted) {
+      setState(() {
+        loading = false;
+      });
+    }
   }
 
   Future getTasks(String listId) async {
@@ -73,10 +75,15 @@ class _TodosPageState extends State<TodosPage> {
       print(e.selfLink);
     });
 
-    todos = listDetails?.needsAction?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))?.toList();
-    dones = listDetails?.completed?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))?.toList();
-    setState(() {});
+    todos = listDetails?.needsAction
+        ?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))
+        ?.toList();
+    dones =
+        listDetails?.completed?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))?.toList();
 
+    if (mounted) {
+      setState(() {});
+    }
     print('______________________');
 
     listDetails?.needsAction?.forEach((e) {
@@ -96,8 +103,9 @@ class _TodosPageState extends State<TodosPage> {
   Future getLists() async {
     tasksList = await api.getLists();
     tasksList.items.map((e) => print(e.title));
-
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
 
     //Response response = await get('https://tasks.googleapis.com//tasks/v1/users/@me/lists/MXh4eWlDa0x3aTNJU0NlRg', headers: headers);
     // Response response = await post(
@@ -144,19 +152,46 @@ class _TodosPageState extends State<TodosPage> {
                           child: TaskInput(onSubmitted: addTaskInTodo),
                         );
                       case 1:
-                        return Todo(
-                          todos: todos,
-                          onTap: markTodoAsDone,
-                          onDeleteTask: deleteTask,
-                          loading: loading,
+                        return Stack(
+                          children: [
+                            Todo(
+                              todos: todos,
+                              onTap: markTodoAsDone,
+                              onDeleteTask: deleteTask,
+                            ),
+                            if (loading)
+                              Positioned.fill(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 45.0, bottom: 20, left: 10, right: 10),
+                                  child: Container(
+                                    color: Colors.grey[800],
+                                    child: Center(child: CircularProgressIndicator()),
+                                  ),
+                                ),
+                              ),
+                          ],
                         ); // Active todos
                       case 2:
                         return SizedBox(height: 30);
                       default:
-                        return Done(
-                          dones: dones,
-                          onTap: markDoneAsTodo,
-                          onDeleteTask: deleteTask,
+                        return Stack(
+                          children: [
+                            Done(
+                              dones: dones,
+                              onTap: markDoneAsTodo,
+                              onDeleteTask: deleteTask,
+                            ),
+                            if (loading)
+                              Positioned.fill(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 45.0, bottom: 20, left: 10, right: 10),
+                                  child: Container(
+                                    color: Colors.grey[600],
+                                    child: Center(child: CircularProgressIndicator()),
+                                  ),
+                                ),
+                              ),
+                          ],
                         ); // Done todos
                     }
                   },
@@ -198,7 +233,7 @@ class _TodosPageState extends State<TodosPage> {
 
       await api.createTask(listId, inputText);
 
-      getTodosAndDones(listId);
+      await getTodosAndDones(listId);
     }
 
     Utils.hideKeyboard(context);

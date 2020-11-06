@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import '../model/model.dart' as Model;
+
 import '../main.dart';
+import '../model/model.dart' as Model;
 import '../utils/colors.dart';
 import 'shared.dart';
+import 'task_item.dart';
 
 class Done extends StatefulWidget {
   final Function onTap;
@@ -27,30 +29,42 @@ class _DoneState extends State<Done> {
             padding: const EdgeInsets.only(bottom: 15.0),
             child: Column(
               children: <Widget>[
-                SizedBox(
-                  height: 50,
-                ),
-                if (widget.dones == null) Container(height: 10),
-                if (widget.dones != null && widget.dones.length == 0)
+                SizedBox(height: 50),
+                if (widget.dones == null || widget?.dones?.length == 0)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                    child: Center(child: Text(isAr ? 'لايوجد مهام منجزة' : 'No done tasks', style: TextStyle(color: Colors.white))),
+                    child: Center(
+                      child: Text(isAr ? 'لايوجد مهام منجزة' : 'No done tasks', style: TextStyle(color: Colors.white)),
+                    ),
                   ),
                 if (widget.dones != null && (widget?.dones?.length ?? 0) > 0)
                   for (int i = (widget?.dones?.length ?? 0) - 1; i >= 0; --i)
-                    getTaskItem(
-                      widget.dones[i].title,
+                    TaskItem(
+                      isDone: true,
+                      todo: widget.dones[i],
                       index: i,
-                      onTap: () {
-                        widget.onTap(pos: i, selfLink: widget.dones[i].selfLink);
+                      onDeleteTask: widget.onDeleteTask,
+                      onTap: () async {
+                        await widget.onTap(pos: i, selfLink: widget.dones[i].selfLink);
                       },
                     ),
+
+                // getTaskItem(
+                //   widget.dones[i].title,
+                //   index: i,
+                //   onTap: () {
+                //     widget.onTap(pos: i, selfLink: widget.dones[i].selfLink);
+                //   },
+                // ),
               ],
             ),
           ),
         ),
         SharedWidget.getCardHeader(
-            context: context, text: isAr ? 'المنجزة' : 'DONE', backgroundColorCode: TodosColor.kSecondaryColorCode, customFontSize: 16),
+            context: context,
+            text: isAr ? 'المنجزة' : 'DONE',
+            backgroundColorCode: TodosColor.kSecondaryColorCode,
+            customFontSize: 16),
       ],
     );
   }
