@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:http/http.dart';
+
 import 'models.dart';
 
 class Api {
@@ -11,7 +13,7 @@ class Api {
 
   Future<String> refreshAccessToken() async {
     try {
-      print("accessToken Refresh");
+      //print("accessToken Refresh");
       final googleSignInAccount = await googleSignIn.signInSilently();
       final googleSignInAuthentication = await googleSignInAccount.authentication;
       accessToken = googleSignInAuthentication.accessToken;
@@ -38,8 +40,9 @@ class Api {
   Future<TasksList> getLists() async {
     Map<String, String> headers = await getHeaders();
 
-    Response response = await get('https://tasks.googleapis.com/tasks/v1/users/@me/lists?maxResults=100', headers: headers);
-    print(response.body);
+    Response response =
+        await get('https://tasks.googleapis.com/tasks/v1/users/@me/lists?maxResults=100', headers: headers);
+    //print(response.body);
 
     TasksList tasksList = TasksList.fromJson(jsonDecode(response.body));
 
@@ -48,18 +51,15 @@ class Api {
 
   Future<String> createList(String title) async {
     Map<String, String> headers = await getHeaders();
-    var body = {
-      //"kind": "tasks#taskList",
-      //"id": "main",
-      "title": title,
-    };
-    Response response = await post('https://tasks.googleapis.com/tasks/v1/users/@me/lists', headers: headers, body: jsonEncode(body));
+    var body = {"title": title};
+    Response response = await post(
+      'https://tasks.googleapis.com/tasks/v1/users/@me/lists',
+      headers: headers,
+      body: jsonEncode(body),
+    );
+    //print(response.body);
 
     String listId = jsonDecode(response.body)['id'];
-
-    print(listId);
-    print(listId);
-    print(listId);
 
     return listId;
   }
@@ -90,8 +90,10 @@ class Api {
       listId = '@default';
     }
 
-    Response response = await get('https://tasks.googleapis.com/tasks/v1/lists/$listId/tasks?showHidden=True&maxResults=100', headers: headers);
-    print(response.body);
+    Response response = await get(
+        'https://tasks.googleapis.com/tasks/v1/lists/$listId/tasks?showHidden=True&maxResults=100',
+        headers: headers);
+    //print(response.body);
 
     ListDetails listDetails = ListDetails.fromJson(jsonDecode(response.body));
 
@@ -109,8 +111,9 @@ class Api {
       listId = '@default';
     }
 
-    Response response = await post('https://tasks.googleapis.com/tasks/v1/lists/$listId/tasks', headers: headers, body: body);
-    print(response.body);
+    Response response =
+        await post('https://tasks.googleapis.com/tasks/v1/lists/$listId/tasks', headers: headers, body: body);
+    //print(response.body);
   }
 
   Future completeTask(selfLink) async {
@@ -121,7 +124,7 @@ class Api {
     });
 
     Response response = await patch(selfLink, headers: headers, body: body);
-    print(response.body);
+    //print(response.body);
   }
 
   Future uncompleteTask(selfLink) async {
@@ -132,13 +135,13 @@ class Api {
     });
 
     Response response = await patch(selfLink, headers: headers, body: body);
-    print(response.body);
+    //print(response.body);
   }
 
   Future deleteTask(selfLink) async {
     Map<String, String> headers = await getHeaders();
 
     Response response = await delete(selfLink, headers: headers);
-    print(response.body);
+    //print(response.body);
   }
 }

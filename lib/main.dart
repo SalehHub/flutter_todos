@@ -62,18 +62,7 @@ class _TodosPageState extends State<TodosPage> {
   }
 
   Future getTasks(String listId) async {
-    print(listId);
-    print(listId);
-    print(listId);
-    print(listId);
     listDetails = await api.getTasks(listId);
-
-    listDetails?.tasks?.forEach((e) {
-      print(e.title);
-      print(e.position);
-      print(e.parent);
-      print(e.selfLink);
-    });
 
     todos = listDetails?.needsAction
         ?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))
@@ -84,20 +73,26 @@ class _TodosPageState extends State<TodosPage> {
     if (mounted) {
       setState(() {});
     }
-    print('______________________');
+    // listDetails?.tasks?.forEach((e) {
+    //   print(e.title);
+    //   print(e.position);
+    //   print(e.parent);
+    //   print(e.selfLink);
+    // });
+    //print('______________________');
 
-    listDetails?.needsAction?.forEach((e) {
-      print(e.title);
-      print(e.status);
-      print(e.isCompleted);
-    });
-
-    print('______________________');
-    listDetails?.completed?.forEach((e) {
-      print(e.title);
-      print(e.position);
-      print(e.isCompleted);
-    });
+    // listDetails?.needsAction?.forEach((e) {
+    //   print(e.title);
+    //   print(e.status);
+    //   print(e.isCompleted);
+    // });
+    //
+    // print('______________________');
+    // listDetails?.completed?.forEach((e) {
+    //   print(e.title);
+    //   print(e.position);
+    //   print(e.isCompleted);
+    // });
   }
 
   Future getLists() async {
