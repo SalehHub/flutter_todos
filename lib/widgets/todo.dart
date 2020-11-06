@@ -12,8 +12,9 @@ class Todo extends StatefulWidget {
   final Function onTap;
   final Function onDeleteTask;
   final List<Model.Todo> todos;
+  final bool loading;
 
-  Todo({@required this.todos, this.onTap, this.onDeleteTask});
+  Todo({@required this.todos, this.onTap, this.onDeleteTask, this.loading});
 
   @override
   _TodoState createState() => _TodoState();
@@ -22,6 +23,15 @@ class Todo extends StatefulWidget {
 class _TodoState extends State<Todo> {
   int taskPosition = NoTask;
   bool showCompletedTaskAnimation = false;
+  List<Widget> todosWidget = [];
+
+  bool loading = false;
+
+  @override
+  void initState() {
+    //loading = widget.loading;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +41,7 @@ class _TodoState extends State<Todo> {
           margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           color: Colors.grey[800],
           child: Padding(
-            padding: const EdgeInsets.only(bottom:15.0),
+            padding: const EdgeInsets.only(bottom: 15.0),
             child: Column(
               children: <Widget>[
                 SizedBox(height: 50),
@@ -45,38 +55,40 @@ class _TodoState extends State<Todo> {
                       ),
                     ),
                   ),
-                if (widget.todos != null && widget.todos.length > 0)
-                  for (int i = 0; i < widget.todos.length; ++i)
-                    AnimatedOpacity(
-                      curve: Curves.fastOutSlowIn,
-                      opacity: taskPosition != i
-                          ? 1.0
-                          : showCompletedTaskAnimation
-                              ? 0
-                              : 1,
-                      duration: Duration(seconds: 1),
-                      child: getTaskItem(
-                        widget.todos[i].title,
-                        index: i,
-                        onTap: () {
-                          setState(() {
-                            taskPosition = i;
-                            showCompletedTaskAnimation = true;
-                          });
-                          Future.delayed(
-                            Duration(milliseconds: animationMilliseconds),
-                          ).then((value) {
-                            taskPosition = NoTask;
-                            showCompletedTaskAnimation = false;
-                            widget.onTap(pos: i);
-                          });
-                        },
-                      ),
-                    ),
+                for (int i = 0; i < (widget?.todos?.length ?? 0); ++i)
+                  getTaskItem(
+                    widget.todos[i].title,
+                    index: i,
+                    onTap: () async {
+                      setState(() {
+                        loading = true;
+                        taskPosition = i;
+                        showCompletedTaskAnimation = true;
+                      });
+                      await widget.onTap(pos: i, selfLink: widget.todos[i].selfLink);
+                      setState(() {
+                        loading = false;
+                        taskPosition = NoTask;
+                        showCompletedTaskAnimation = false;
+                      });
+                    },
+                  ),
               ],
             ),
           ),
         ),
+        if (loading)
+          Positioned.fill(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(
+                color: Colors.grey[800],
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ),
+          ),
         SharedWidget.getCardHeader(context: context, text: isAr ? 'المهام' : 'TO DO', customFontSize: 16),
       ],
     );
@@ -90,7 +102,7 @@ class _TodoState extends State<Todo> {
           key: Key(text + '$index'),
           direction: DismissDirection.endToStart,
           onDismissed: (direction) {
-            widget.onDeleteTask(todo: widget.todos[index]);
+            widget.onDeleteTask(todo: widget.todos[index], selfLink: widget.todos[index].selfLink);
           },
           background: SharedWidget.getOnDismissDeleteBackground(),
           child: InkWell(

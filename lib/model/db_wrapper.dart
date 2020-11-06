@@ -6,13 +6,13 @@ class DBWrapper {
 
   DBWrapper._();
 
-  Future<List<Todo>> getTodos(int category) async {
-    List list = await DB.sharedInstance.retrieveTodos(category);
+  Future<List<Todo>> getTodos(String listId) async {
+    List list = await DB.sharedInstance.retrieveTodos(listId);
     return list;
   }
 
-  Future<List<Todo>> getDones(int category) async {
-    List list = await DB.sharedInstance.retrieveTodos(category,status: TodoStatus.done);
+  Future<List<Todo>> getDones(String listId) async {
+    List list = await DB.sharedInstance.retrieveTodos(listId,status: TodoStatus.done);
     return list;
   }
 

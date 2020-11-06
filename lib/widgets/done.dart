@@ -24,7 +24,7 @@ class _DoneState extends State<Done> {
           margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           color: Colors.grey[600],
           child: Padding(
-            padding: const EdgeInsets.only(bottom:15.0),
+            padding: const EdgeInsets.only(bottom: 15.0),
             child: Column(
               children: <Widget>[
                 SizedBox(
@@ -36,13 +36,13 @@ class _DoneState extends State<Done> {
                     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                     child: Center(child: Text(isAr ? 'لايوجد مهام منجزة' : 'No done tasks', style: TextStyle(color: Colors.white))),
                   ),
-                if (widget.dones != null && widget.dones.length > 0)
-                  for (int i = widget.dones.length - 1; i >= 0; --i)
+                if (widget.dones != null && (widget?.dones?.length ?? 0) > 0)
+                  for (int i = (widget?.dones?.length ?? 0) - 1; i >= 0; --i)
                     getTaskItem(
                       widget.dones[i].title,
                       index: i,
                       onTap: () {
-                        widget.onTap(pos: i);
+                        widget.onTap(pos: i, selfLink: widget.dones[i].selfLink);
                       },
                     ),
               ],
@@ -64,7 +64,7 @@ class _DoneState extends State<Done> {
           key: Key(text + '$index'),
           direction: DismissDirection.endToStart,
           onDismissed: (direction) {
-            widget.onDeleteTask(todo: widget.dones[index]);
+            widget.onDeleteTask(todo: widget.dones[index], selfLink: widget.dones[index].selfLink);
           },
           background: SharedWidget.getOnDismissDeleteBackground(),
           child: InkWell(

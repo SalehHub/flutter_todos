@@ -9,14 +9,14 @@ const kTodosStatusActive = 0;
 const kTodosStatusDone = 1;
 
 const kDatabaseName = 'myTodos.db';
-const kDatabaseVersion = 1;
+const kDatabaseVersion = 6;
 const kSQLCreateStatement = '''
 CREATE TABLE "todos" (
 	 "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 	 "title" TEXT NOT NULL,
 	 "created" text NOT NULL,
 	 "updated" TEXT NOT NULL,
-	 "category" integer,
+	 "listId" TEXT NOT NULL,
 	 "status" integer DEFAULT $kTodosStatusActive
 );
 ''';
@@ -61,10 +61,10 @@ class DB {
     await db.delete(kTableTodos, where: 'status=?', whereArgs: [status]);
   }
 
-  Future<List<Todo>> retrieveTodos(int category, {TodoStatus status = TodoStatus.active}) async {
+  Future<List<Todo>> retrieveTodos(String listId, {TodoStatus status = TodoStatus.active}) async {
     final db = await database;
     final List<Map<String, dynamic>> maps =
-        await db.query(kTableTodos, where: 'status=? and category=?', whereArgs: [status.index, category], orderBy: 'updated ASC');
+        await db.query(kTableTodos, where: 'status=? and listId=?', whereArgs: [status.index, listId], orderBy: 'updated ASC');
 
     // Convert List<Map<String, dynamic>> to List<Todo_object>
     return List.generate(maps.length, (i) {
@@ -74,7 +74,7 @@ class DB {
         created: DateTime.parse(maps[i]['created']),
         updated: DateTime.parse(maps[i]['updated']),
         status: maps[i]['status'],
-        category: maps[i]['category'],
+        listId: maps[i]['listId'],
       );
     });
   }
