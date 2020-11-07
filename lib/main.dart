@@ -12,7 +12,6 @@ import 'widgets/todo.dart';
 
 bool isAr = false;
 String listId = 'main';
-Set idTokens = {};
 
 class TodosPage extends StatefulWidget {
   final String title;
@@ -32,7 +31,6 @@ class _TodosPageState extends State<TodosPage> {
   List<Model.Todo> dones;
 
   TasksList tasksList;
-  ListDetails listDetails;
   List<Task> tasks;
   Api api;
 
@@ -56,6 +54,17 @@ class _TodosPageState extends State<TodosPage> {
       listId = await api.getMainListId(listId);
     }
 
+    todos = await DBWrapper.sharedInstance.getTodos(listId);
+    dones = await DBWrapper.sharedInstance.getDones(listId);
+
+    if (todos?.isNotEmpty == true || dones?.isNotEmpty == true) {
+      if (mounted) {
+        setState(() {
+          loading = false;
+        });
+      }
+    }
+
     await getTasks(listId);
     if (mounted) {
       setState(() {
@@ -65,66 +74,68 @@ class _TodosPageState extends State<TodosPage> {
   }
 
   Future getTasks(String listId) async {
-    listDetails = await api.getTasks(listId);
+    ListDetails listDetails = await api.getTasks(listId);
     tasks = listDetails.tasks;
-    //
+
     List<Model.Todo> allTodos = tasks
         ?.map((e) => Model.Todo(
-            updated: DateTime.parse(e.updated),
-            created: DateTime.parse(e.updated),
-            listId: listId,
-            title: e.title,
-            status: e.status,
-            selfLink: e.selfLink))
+              updated: DateTime.parse(e.updated),
+              created: DateTime.parse(e.updated),
+              listId: listId,
+              title: e.title,
+              status: e.status,
+              selfLink: e.selfLink,
+              position: e.position,
+            ))
         ?.toList();
 
-    for (Model.Todo td in allTodos) {
-      DBWrapper.sharedInstance.addTodo(td);
+    if (allTodos != null) {
+      for (Model.Todo td in allTodos) {
+        try {
+          await DBWrapper.sharedInstance.addTodo(td);
+        } catch (e) {}
+      }
+
+      for (Model.Todo td in allTodos) {
+        try {
+          await DB.sharedInstance.updateTodoUsingSelfLink(td);
+        } catch (e) {}
+      }
     }
-
     updateTasksState(listId);
-
-    // listDetails?.tasks?.forEach((e) {
-    //   print(e.title);
-    //   print(e.position);
-    //   print(e.parent);
-    //   print(e.selfLink);
-    // });
-    //print('______________________');
-
-    // listDetails?.needsAction?.forEach((e) {
-    //   print(e.title);
-    //   print(e.status);
-    //   print(e.isCompleted);
-    // });
-    //
-    // print('______________________');
-    // listDetails?.completed?.forEach((e) {
-    //   print(e.title);
-    //   print(e.position);
-    //   print(e.isCompleted);
-    // });
   }
 
-  Future<void> updateTasksState(String listId) async {
-    //sqlite
-    //todos = await DBWrapper.sharedInstance.getTodos(listId);
-    //dones = await DBWrapper.sharedInstance.getDones(listId);
-
-    try {
-      todos = tasks
-          ?.where((element) => element.isCompleted == false)
-          ?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))
-          ?.toList();
-      dones = tasks
-          ?.where((element) => element.isCompleted == true)
-          ?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))
-          ?.toList();
-    } catch (e) {}
+  Future<void> updateTasksStateSqlite(String listId) async {
+    todos = await DBWrapper.sharedInstance.getTodos(listId);
+    todos?.sort();
+    dones = await DBWrapper.sharedInstance.getDones(listId);
+    dones?.sort();
 
     if (mounted) {
       setState(() {});
     }
+  }
+
+  Future<void> updateTasksStateApi(String listId) async {
+    // try {
+    //   todos = tasks
+    //       ?.where((element) => element.isCompleted == false)
+    //       ?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))
+    //       ?.toList();
+    //   dones = tasks
+    //       ?.where((element) => element.isCompleted == true)
+    //       ?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))
+    //       ?.toList();
+    // } catch (e) {}
+    //
+    // if (mounted) {
+    //   setState(() {});
+    // }
+  }
+
+  Future<void> updateTasksState(String listId) async {
+    //updateTasksStateApi(listId);
+    updateTasksStateSqlite(listId);
   }
 
   Future getLists() async {
@@ -133,19 +144,6 @@ class _TodosPageState extends State<TodosPage> {
     if (mounted) {
       setState(() {});
     }
-
-    //Response response = await get('https://tasks.googleapis.com//tasks/v1/users/@me/lists/MXh4eWlDa0x3aTNJU0NlRg', headers: headers);
-    // Response response = await post(
-    //   'https://tasks.googleapis.com/tasks/v1/users/@me/lists',
-    //   headers: headers,
-    //   body: jsonEncode({
-    //     "kind": "tasks#taskList",
-    //     "id": "main",
-    //     "title": "Main",
-    //   }),
-    // );
-
-    //print(response.body);
   }
 
   @override
@@ -154,13 +152,13 @@ class _TodosPageState extends State<TodosPage> {
       appBar: AppBar(
         brightness: Theme.of(context).brightness,
         elevation: 0,
-        //actions: [Popup(getTasks: getTasks)],
         centerTitle: true,
         title: GestureDetector(
-            onTap: () {
-              getLists();
-            },
-            child: Text(welcomeMsg)),
+          onTap: () {
+            getLists();
+          },
+          child: Text(welcomeMsg),
+        ),
       ),
       body: SafeArea(
         child: GestureDetector(
@@ -197,7 +195,7 @@ class _TodosPageState extends State<TodosPage> {
                                 ),
                               ),
                           ],
-                        ); // Active todos
+                        );
                       case 2:
                         return SizedBox(height: 30);
                       default:
@@ -219,7 +217,7 @@ class _TodosPageState extends State<TodosPage> {
                                 ),
                               ),
                           ],
-                        ); // Done todos
+                        );
                     }
                   },
                   childCount: 4,
@@ -238,7 +236,6 @@ class _TodosPageState extends State<TodosPage> {
     if (inputText.length > 0) {
       Task task = await api.createTask(listId, inputText);
 
-      // Add todos
       Model.Todo todo = Model.Todo(
         title: inputText,
         created: DateTime.now(),
@@ -246,11 +243,11 @@ class _TodosPageState extends State<TodosPage> {
         status: kTodosStatusActive,
         listId: listId,
         selfLink: task.selfLink,
+        position: '-1',
       );
 
-      DBWrapper.sharedInstance.addTodo(todo);
-
-      tasks.insert(0, task);
+      await DBWrapper.sharedInstance.addTodo(todo);
+      //tasks.insert(0, task);
       updateTasksState(listId);
       //await getTasks(listId);
     }
@@ -259,43 +256,39 @@ class _TodosPageState extends State<TodosPage> {
     controller.text = '';
   }
 
-  Future<void> markTodoAsDone({@required int pos, @required String selfLink}) async {
-    DBWrapper.sharedInstance.markTodoAsDone(todos[pos]);
+  Future<void> markTodoAsDone(Model.Todo todo) async {
+    DBWrapper.sharedInstance.markTodoAsDone(todo);
 
-    api.completeTask(selfLink);
+    api.completeTask(todo.selfLink);
 
-    Task task = tasks?.firstWhere((element) => element.selfLink == selfLink);
-    task?.status = 'completed';
-    int index = tasks?.indexWhere((element) => element.selfLink == selfLink);
-    tasks?.removeWhere((element) => element.selfLink == selfLink);
-    tasks?.insert(index, task);
-
-    updateTasksState(listId);
-
-    //await getTasks(listId);
-  }
-
-  Future<void> markDoneAsTodo({@required int pos, @required String selfLink}) async {
-    DBWrapper.sharedInstance.markDoneAsTodo(dones[pos]);
-    api.uncompleteTask(selfLink);
-
-    Task task = tasks?.firstWhere((element) => element.selfLink == selfLink);
-    task?.status = 'needsAction';
-    int index = tasks?.indexWhere((element) => element.selfLink == selfLink);
-    tasks?.removeWhere((element) => element.selfLink == selfLink);
-    tasks?.insert(index, task);
+    // Task task = tasks?.firstWhere((element) => element.selfLink == todo.selfLink);
+    // task?.status = kTodosStatusDone;
+    // int index = tasks?.indexWhere((element) => element.selfLink == todo.selfLink);
+    // tasks?.removeWhere((element) => element.selfLink == todo.selfLink);
+    // tasks?.insert(index, task);
 
     updateTasksState(listId);
-
-    //await getTasks(listId);
   }
 
-  Future<void> deleteTask({@required Model.Todo todo, @required String selfLink}) async {
+  Future<void> markDoneAsTodo(Model.Todo todo) async {
+    DBWrapper.sharedInstance.markDoneAsTodo(todo);
+    api.uncompleteTask(todo.selfLink);
+
+    // Task task = tasks?.firstWhere((element) => element.selfLink == todo.selfLink);
+    // task?.status = kTodosStatusActive;
+    // int index = tasks?.indexWhere((element) => element.selfLink == todo.selfLink);
+    // tasks?.removeWhere((element) => element.selfLink == todo.selfLink);
+    // tasks?.insert(index, task);
+
+    updateTasksState(listId);
+  }
+
+  Future<void> deleteTask(Model.Todo todo) async {
     DBWrapper.sharedInstance.deleteTodo(todo);
-    api.deleteTask(selfLink);
+    api.deleteTask(todo.selfLink);
 
-    tasks.removeWhere((element) => element.selfLink == selfLink);
+    // tasks?.removeWhere((element) => element.selfLink == todo.selfLink);
+
     updateTasksState(listId);
-    //await getTasks(listId);
   }
 }

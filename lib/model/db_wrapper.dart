@@ -17,7 +17,7 @@ class DBWrapper {
     return list;
   }
 
-  void addTodo(Todo todo) async {
+  Future addTodo(Todo todo) async {
     await DB.sharedInstance.createTodo(todo);
   }
 
@@ -25,16 +25,19 @@ class DBWrapper {
     todo.status = kTodosStatusDone;
     todo.updated = DateTime.now();
     await DB.sharedInstance.updateTodo(todo);
+    await DB.sharedInstance.updateTodoUsingSelfLink(todo);
   }
 
   void markDoneAsTodo(Todo todo) async {
     todo.status = kTodosStatusActive;
     todo.updated = DateTime.now();
     await DB.sharedInstance.updateTodo(todo);
+    await DB.sharedInstance.updateTodoUsingSelfLink(todo);
   }
 
   void deleteTodo(Todo todo) async {
     await DB.sharedInstance.deleteTodo(todo);
+    await DB.sharedInstance.deleteTodoUsingSelfLink(todo);
   }
 
   void deleteAllDoneTodos() async {

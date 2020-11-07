@@ -13,11 +13,9 @@ class Api {
 
   Future<String> refreshAccessToken() async {
     try {
-      //print("accessToken Refresh");
-      final googleSignInAccount = await googleSignIn.signInSilently();
+      final googleSignInAccount = await googleSignIn.signInSilently(suppressErrors: false);
       final googleSignInAuthentication = await googleSignInAccount.authentication;
       accessToken = googleSignInAuthentication.accessToken;
-      print(accessToken);
       return accessToken; // New refreshed accessToken
     } catch (e) {
       rethrow;
@@ -40,8 +38,10 @@ class Api {
   Future<TasksList> getLists() async {
     Map<String, String> headers = await getHeaders();
 
-    Response response =
-        await get('https://tasks.googleapis.com/tasks/v1/users/@me/lists?maxResults=100', headers: headers);
+    Response response = await get(
+      'https://tasks.googleapis.com/tasks/v1/users/@me/lists?maxResults=100',
+      headers: headers,
+    );
     //print(response.body);
 
     TasksList tasksList = TasksList.fromJson(jsonDecode(response.body));
@@ -91,8 +91,9 @@ class Api {
     }
 
     Response response = await get(
-        'https://tasks.googleapis.com/tasks/v1/lists/$listId/tasks?showHidden=True&maxResults=100',
-        headers: headers);
+      'https://tasks.googleapis.com/tasks/v1/lists/$listId/tasks?showHidden=True&maxResults=100',
+      headers: headers,
+    );
     //print(response.body);
 
     ListDetails listDetails = ListDetails.fromJson(jsonDecode(response.body));
@@ -103,16 +104,17 @@ class Api {
   Future<Task> createTask(String listId, String title) async {
     Map<String, String> headers = await getHeaders();
 
-    var body = jsonEncode({
-      "title": title,
-    });
+    var body = jsonEncode({"title": title});
 
     if (listId?.toLowerCase() == 'main') {
       listId = '@default';
     }
 
-    Response response =
-        await post('https://tasks.googleapis.com/tasks/v1/lists/$listId/tasks', headers: headers, body: body);
+    Response response = await post(
+      'https://tasks.googleapis.com/tasks/v1/lists/$listId/tasks',
+      headers: headers,
+      body: body,
+    );
     print(response.body);
 
     Task task = Task.fromJson(jsonDecode(response.body));
@@ -122,9 +124,7 @@ class Api {
   Future completeTask(selfLink) async {
     Map<String, String> headers = await getHeaders();
 
-    var body = jsonEncode({
-      "status": "completed",
-    });
+    var body = jsonEncode({"status": "completed"});
 
     Response response = await patch(selfLink, headers: headers, body: body);
     //print(response.body);
@@ -133,9 +133,7 @@ class Api {
   Future uncompleteTask(selfLink) async {
     Map<String, String> headers = await getHeaders();
 
-    var body = jsonEncode({
-      "status": "needsAction",
-    });
+    var body = jsonEncode({"status": "needsAction"});
 
     Response response = await patch(selfLink, headers: headers, body: body);
     //print(response.body);

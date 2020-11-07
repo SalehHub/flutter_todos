@@ -48,7 +48,7 @@ class _TaskItemState extends State<TaskItem> {
                     setState(() {
                       loading = true;
                     });
-                    await widget.onDeleteTask(todo: widget.todo, selfLink: widget.todo.selfLink);
+                    await widget.onDeleteTask(widget.todo);
                     setState(() {
                       loading = false;
                     });

@@ -65,7 +65,7 @@ class _TodoState extends State<Todo> {
                         taskPosition = i;
                         showCompletedTaskAnimation = true;
                       });
-                      await widget.onTap(pos: i, selfLink: widget.todos[i].selfLink);
+                      await widget.onTap(widget.todos[i]);
                       setState(() {
                         taskPosition = NoTask;
                         showCompletedTaskAnimation = false;

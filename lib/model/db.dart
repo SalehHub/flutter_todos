@@ -9,8 +9,8 @@ import '../model/model.dart';
 const kTodosStatusActive = 'needsAction';
 const kTodosStatusDone = 'completed';
 
-const kDatabaseName = 'myKKUTodos2.db';
-const kDatabaseVersion = 6;
+const kDatabaseName = 'myTodos.db';
+const kDatabaseVersion = 1;
 const kSQLCreateStatement = '''
 CREATE TABLE "todos" (
 	 "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -19,6 +19,7 @@ CREATE TABLE "todos" (
 	 "updated" TEXT NOT NULL,
 	 "selfLink" TEXT UNIQUE,
 	 "listId" TEXT NOT NULL,
+	 "position" TEXT,
 	 "status" TEXT DEFAULT $kTodosStatusActive
 );
 ''';
@@ -43,22 +44,32 @@ class DB {
     });
   }
 
-  void createTodo(Todo todo) async {
+  Future createTodo(Todo todo) async {
     final db = await database;
     await db.insert(kTableTodos, todo.toMapAutoID());
   }
 
-  void updateTodo(Todo todo) async {
+  Future updateTodo(Todo todo) async {
     final db = await database;
     await db.update(kTableTodos, todo.toMap(), where: 'id=?', whereArgs: [todo.id]);
   }
 
-  void deleteTodo(Todo todo) async {
+  Future updateTodoUsingSelfLink(Todo todo) async {
+    final db = await database;
+    await db.update(kTableTodos, todo.toMapAutoID(), where: 'selfLink=?', whereArgs: [todo.selfLink]);
+  }
+
+  Future deleteTodo(Todo todo) async {
     final db = await database;
     await db.delete(kTableTodos, where: 'id=?', whereArgs: [todo.id]);
   }
 
-  void deleteAllTodos({String status = kTodosStatusDone}) async {
+  Future deleteTodoUsingSelfLink(Todo todo) async {
+    final db = await database;
+    await db.delete(kTableTodos, where: 'selfLink=?', whereArgs: [todo.selfLink]);
+  }
+
+  Future deleteAllTodos({String status = kTodosStatusDone}) async {
     final db = await database;
     await db.delete(kTableTodos, where: 'status=?', whereArgs: [status]);
   }
@@ -66,18 +77,22 @@ class DB {
   Future<List<Todo>> retrieveTodos(String listId, {String status = kTodosStatusActive}) async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(kTableTodos,
-        where: 'status=? and listId=?', whereArgs: [status, listId], orderBy: 'updated ASC');
+        where: 'status=? and listId=?', whereArgs: [status, listId], orderBy: 'position ASC');
 
     // Convert List<Map<String, dynamic>> to List<Todo_object>
-    return List.generate(maps.length, (i) {
+    List<Todo> todos = List.generate(maps.length, (i) {
       return Todo(
         id: maps[i]['id'],
         title: maps[i]['title'],
-        created: DateTime.parse(maps[i]['created']),
-        updated: DateTime.parse(maps[i]['updated']),
+        created: DateTime.tryParse(maps[i]['created']),
+        updated: DateTime.tryParse(maps[i]['updated']),
         status: maps[i]['status'],
         listId: maps[i]['listId'],
+        selfLink: maps[i]['selfLink'],
+        position: maps[i]['position'],
       );
     });
+    todos.sort();
+    return todos;
   }
 }
