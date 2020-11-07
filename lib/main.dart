@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'api.dart';
+import 'model/db.dart';
 import 'model/db_wrapper.dart';
 import 'model/model.dart' as Model;
 import 'models.dart';
@@ -55,7 +56,7 @@ class _TodosPageState extends State<TodosPage> {
       listId = await api.getMainListId(listId);
     }
 
-    await getTodosAndDones(listId);
+    await getTasks(listId);
     if (mounted) {
       setState(() {
         loading = false;
@@ -66,6 +67,20 @@ class _TodosPageState extends State<TodosPage> {
   Future getTasks(String listId) async {
     listDetails = await api.getTasks(listId);
     tasks = listDetails.tasks;
+    //
+    List<Model.Todo> allTodos = tasks
+        ?.map((e) => Model.Todo(
+            updated: DateTime.parse(e.updated),
+            created: DateTime.parse(e.updated),
+            listId: listId,
+            title: e.title,
+            status: e.status,
+            selfLink: e.selfLink))
+        ?.toList();
+
+    for (Model.Todo td in allTodos) {
+      DBWrapper.sharedInstance.addTodo(td);
+    }
 
     updateTasksState(listId);
 
@@ -91,15 +106,21 @@ class _TodosPageState extends State<TodosPage> {
     // });
   }
 
-  void updateTasksState(String listId) {
-    todos = tasks
-        ?.where((element) => element.isCompleted == false)
-        ?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))
-        ?.toList();
-    dones = tasks
-        ?.where((element) => element.isCompleted == true)
-        ?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))
-        ?.toList();
+  Future<void> updateTasksState(String listId) async {
+    //sqlite
+    //todos = await DBWrapper.sharedInstance.getTodos(listId);
+    //dones = await DBWrapper.sharedInstance.getDones(listId);
+
+    try {
+      todos = tasks
+          ?.where((element) => element.isCompleted == false)
+          ?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))
+          ?.toList();
+      dones = tasks
+          ?.where((element) => element.isCompleted == true)
+          ?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))
+          ?.toList();
+    } catch (e) {}
 
     if (mounted) {
       setState(() {});
@@ -133,7 +154,7 @@ class _TodosPageState extends State<TodosPage> {
       appBar: AppBar(
         brightness: Theme.of(context).brightness,
         elevation: 0,
-        //actions: [Popup(getTodosAndDones: getTodosAndDones)],
+        //actions: [Popup(getTasks: getTasks)],
         centerTitle: true,
         title: GestureDetector(
             onTap: () {
@@ -211,37 +232,27 @@ class _TodosPageState extends State<TodosPage> {
     );
   }
 
-  Future<void> getTodosAndDones(String listId) async {
-    final _todos = await DBWrapper.sharedInstance.getTodos(listId);
-    final _dones = await DBWrapper.sharedInstance.getDones(listId);
-    // setState(() {
-    //   todos = _todos;
-    //   dones = _dones;
-    // });
-
-    await getTasks(listId);
-  }
-
   Future<void> addTaskInTodo({@required TextEditingController controller}) async {
     final inputText = controller.text.trim();
 
     if (inputText.length > 0) {
+      Task task = await api.createTask(listId, inputText);
+
       // Add todos
       Model.Todo todo = Model.Todo(
         title: inputText,
         created: DateTime.now(),
         updated: DateTime.now(),
-        status: Model.TodoStatus.active.index,
+        status: kTodosStatusActive,
         listId: listId,
+        selfLink: task.selfLink,
       );
 
       DBWrapper.sharedInstance.addTodo(todo);
 
-      Task task = await api.createTask(listId, inputText);
-
       tasks.insert(0, task);
       updateTasksState(listId);
-      //await getTodosAndDones(listId);
+      //await getTasks(listId);
     }
 
     Utils.hideKeyboard(context);
@@ -250,32 +261,33 @@ class _TodosPageState extends State<TodosPage> {
 
   Future<void> markTodoAsDone({@required int pos, @required String selfLink}) async {
     DBWrapper.sharedInstance.markTodoAsDone(todos[pos]);
+
     api.completeTask(selfLink);
 
-    Task task = tasks.firstWhere((element) => element.selfLink == selfLink);
-    task.status = 'completed';
-    int index = tasks.indexWhere((element) => element.selfLink == selfLink);
-    tasks.removeWhere((element) => element.selfLink == selfLink);
-    tasks.insert(index, task);
+    Task task = tasks?.firstWhere((element) => element.selfLink == selfLink);
+    task?.status = 'completed';
+    int index = tasks?.indexWhere((element) => element.selfLink == selfLink);
+    tasks?.removeWhere((element) => element.selfLink == selfLink);
+    tasks?.insert(index, task);
 
     updateTasksState(listId);
 
-    //await getTodosAndDones(listId);
+    //await getTasks(listId);
   }
 
   Future<void> markDoneAsTodo({@required int pos, @required String selfLink}) async {
     DBWrapper.sharedInstance.markDoneAsTodo(dones[pos]);
     api.uncompleteTask(selfLink);
 
-    Task task = tasks.firstWhere((element) => element.selfLink == selfLink);
-    task.status = 'needsAction';
-    int index = tasks.indexWhere((element) => element.selfLink == selfLink);
-    tasks.removeWhere((element) => element.selfLink == selfLink);
-    tasks.insert(index, task);
+    Task task = tasks?.firstWhere((element) => element.selfLink == selfLink);
+    task?.status = 'needsAction';
+    int index = tasks?.indexWhere((element) => element.selfLink == selfLink);
+    tasks?.removeWhere((element) => element.selfLink == selfLink);
+    tasks?.insert(index, task);
 
     updateTasksState(listId);
 
-    //await getTodosAndDones(listId);
+    //await getTasks(listId);
   }
 
   Future<void> deleteTask({@required Model.Todo todo, @required String selfLink}) async {
@@ -284,6 +296,6 @@ class _TodosPageState extends State<TodosPage> {
 
     tasks.removeWhere((element) => element.selfLink == selfLink);
     updateTasksState(listId);
-    //await getTodosAndDones(listId);
+    //await getTasks(listId);
   }
 }

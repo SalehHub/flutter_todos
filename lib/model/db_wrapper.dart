@@ -1,5 +1,6 @@
-import '../model/model.dart';
 import '../model/db.dart';
+import '../model/model.dart';
+import 'db.dart';
 
 class DBWrapper {
   static final DBWrapper sharedInstance = DBWrapper._();
@@ -7,12 +8,12 @@ class DBWrapper {
   DBWrapper._();
 
   Future<List<Todo>> getTodos(String listId) async {
-    List list = await DB.sharedInstance.retrieveTodos(listId);
+    List list = await DB.sharedInstance.retrieveTodos(listId, status: kTodosStatusActive);
     return list;
   }
 
   Future<List<Todo>> getDones(String listId) async {
-    List list = await DB.sharedInstance.retrieveTodos(listId,status: TodoStatus.done);
+    List list = await DB.sharedInstance.retrieveTodos(listId, status: kTodosStatusDone);
     return list;
   }
 
@@ -21,13 +22,13 @@ class DBWrapper {
   }
 
   void markTodoAsDone(Todo todo) async {
-    todo.status = TodoStatus.done.index;
+    todo.status = kTodosStatusDone;
     todo.updated = DateTime.now();
     await DB.sharedInstance.updateTodo(todo);
   }
 
   void markDoneAsTodo(Todo todo) async {
-    todo.status = TodoStatus.active.index;
+    todo.status = kTodosStatusActive;
     todo.updated = DateTime.now();
     await DB.sharedInstance.updateTodo(todo);
   }

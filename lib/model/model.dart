@@ -1,12 +1,10 @@
-enum TodoStatus { active, done }
-
 class Todo {
   int id;
   String title;
   String selfLink;
   DateTime created;
   DateTime updated;
-  int status;
+  String status;
   String listId;
 
   Todo({this.id, this.title, this.selfLink, this.created, this.updated, this.status, this.listId});
@@ -15,7 +13,7 @@ class Todo {
     return {
       'id': id,
       'title': title,
-      //'selfLink': selfLink,
+      'selfLink': selfLink,
       'created': created.toString(),
       'updated': updated.toString(),
       'status': status,
@@ -26,10 +24,10 @@ class Todo {
   Map<String, dynamic> toMapAutoID() {
     return {
       'title': title,
-      //'selfLink': selfLink,
+      'selfLink': selfLink,
       'created': created.toString(),
       'updated': updated.toString(),
-      'status': TodoStatus.active.index,
+      'status': status,
       'listId': listId,
     };
   }

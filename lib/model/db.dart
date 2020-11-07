@@ -1,14 +1,15 @@
 import 'dart:io';
-import 'package:sqflite/sqflite.dart';
+
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../model/model.dart';
 
-const kTodosStatusActive = 0;
-const kTodosStatusDone = 1;
+const kTodosStatusActive = 'needsAction';
+const kTodosStatusDone = 'completed';
 
-const kDatabaseName = 'myTodos.db';
+const kDatabaseName = 'myKKUTodos2.db';
 const kDatabaseVersion = 6;
 const kSQLCreateStatement = '''
 CREATE TABLE "todos" (
@@ -16,8 +17,9 @@ CREATE TABLE "todos" (
 	 "title" TEXT NOT NULL,
 	 "created" text NOT NULL,
 	 "updated" TEXT NOT NULL,
+	 "selfLink" TEXT UNIQUE,
 	 "listId" TEXT NOT NULL,
-	 "status" integer DEFAULT $kTodosStatusActive
+	 "status" TEXT DEFAULT $kTodosStatusActive
 );
 ''';
 
@@ -56,15 +58,15 @@ class DB {
     await db.delete(kTableTodos, where: 'id=?', whereArgs: [todo.id]);
   }
 
-  void deleteAllTodos({int status = kTodosStatusDone}) async {
+  void deleteAllTodos({String status = kTodosStatusDone}) async {
     final db = await database;
     await db.delete(kTableTodos, where: 'status=?', whereArgs: [status]);
   }
 
-  Future<List<Todo>> retrieveTodos(String listId, {TodoStatus status = TodoStatus.active}) async {
+  Future<List<Todo>> retrieveTodos(String listId, {String status = kTodosStatusActive}) async {
     final db = await database;
-    final List<Map<String, dynamic>> maps =
-        await db.query(kTableTodos, where: 'status=? and listId=?', whereArgs: [status.index, listId], orderBy: 'updated ASC');
+    final List<Map<String, dynamic>> maps = await db.query(kTableTodos,
+        where: 'status=? and listId=?', whereArgs: [status, listId], orderBy: 'updated ASC');
 
     // Convert List<Map<String, dynamic>> to List<Todo_object>
     return List.generate(maps.length, (i) {
