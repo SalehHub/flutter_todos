@@ -11,6 +11,7 @@ import 'widgets/todo.dart';
 
 bool isAr = false;
 String listId = 'main';
+Set idTokens = {};
 
 class TodosPage extends StatefulWidget {
   final String title;
@@ -236,9 +237,11 @@ class _TodosPageState extends State<TodosPage> {
 
       DBWrapper.sharedInstance.addTodo(todo);
 
-      await api.createTask(listId, inputText);
+      Task task = await api.createTask(listId, inputText);
 
-      await getTodosAndDones(listId);
+      tasks.insert(0, task);
+      updateTasksState(listId);
+      //await getTodosAndDones(listId);
     }
 
     Utils.hideKeyboard(context);

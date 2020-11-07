@@ -101,6 +101,7 @@ class Api {
   }
 
   Future createTask(String listId, String title) async {
+  Future<Task> createTask(String listId, String title) async {
     Map<String, String> headers = await getHeaders();
 
     var body = jsonEncode({
@@ -113,7 +114,10 @@ class Api {
 
     Response response =
         await post('https://tasks.googleapis.com/tasks/v1/lists/$listId/tasks', headers: headers, body: body);
-    //print(response.body);
+    print(response.body);
+
+    Task task = Task.fromJson(jsonDecode(response.body));
+    return task;
   }
 
   Future completeTask(selfLink) async {
