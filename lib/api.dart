@@ -100,7 +100,6 @@ class Api {
     return listDetails;
   }
 
-  Future createTask(String listId, String title) async {
   Future<Task> createTask(String listId, String title) async {
     Map<String, String> headers = await getHeaders();
 
