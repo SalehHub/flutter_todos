@@ -9,7 +9,7 @@ import '../model/model.dart';
 const kTodosStatusActive = 'needsAction';
 const kTodosStatusDone = 'completed';
 
-const kDatabaseName = 'myTodos.db';
+const kDatabaseName = 'myTodos1.db';
 const kDatabaseVersion = 1;
 const kSQLCreateStatement = '''
 CREATE TABLE "todos" (
@@ -75,6 +75,9 @@ class DB {
   }
 
   Future<List<Todo>> retrieveTodos(String listId, {String status = kTodosStatusActive}) async {
+    if (listId == null) {
+      listId = 'main';
+    }
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(kTableTodos,
         where: 'status=? and listId=?', whereArgs: [status, listId], orderBy: 'position ASC');

@@ -13,6 +13,7 @@ class Api {
 
   Future<String> refreshAccessToken() async {
     try {
+      //final googleSignInAccount = await googleSignIn.signIn();
       final googleSignInAccount = await googleSignIn.signInSilently(suppressErrors: false);
       final googleSignInAuthentication = await googleSignInAccount.authentication;
       accessToken = googleSignInAuthentication.accessToken;
@@ -27,6 +28,7 @@ class Api {
       await refreshAccessToken();
     }
 
+    //print(accessToken);
     Map<String, String> headers = {
       HttpHeaders.contentTypeHeader: "application/json",
       HttpHeaders.authorizationHeader: "Bearer $accessToken",
@@ -69,13 +71,14 @@ class Api {
 
     String mainListId;
 
-    for (Items item in tasksList.items) {
-      if (item.title == listTitle) {
-        mainListId = item.id;
-        break;
+    if (tasksList?.items != null) {
+      for (Items item in tasksList?.items) {
+        if (item.title == listTitle) {
+          mainListId = item.id;
+          break;
+        }
       }
     }
-
     if (mainListId == null) {
       mainListId = await createList(listTitle);
     }

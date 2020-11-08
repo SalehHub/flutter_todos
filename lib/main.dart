@@ -117,25 +117,26 @@ class _TodosPageState extends State<TodosPage> {
   }
 
   Future<void> updateTasksStateApi(String listId) async {
-    // try {
-    //   todos = tasks
-    //       ?.where((element) => element.isCompleted == false)
-    //       ?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))
-    //       ?.toList();
-    //   dones = tasks
-    //       ?.where((element) => element.isCompleted == true)
-    //       ?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))
-    //       ?.toList();
-    // } catch (e) {}
-    //
-    // if (mounted) {
-    //   setState(() {});
-    // }
+    try {
+      todos = tasks
+          ?.where((element) => element.isCompleted == false)
+          ?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))
+          ?.toList();
+      dones = tasks
+          ?.where((element) => element.isCompleted == true)
+          ?.map((e) => Model.Todo(listId: listId, title: e.title, selfLink: e.selfLink))
+          ?.toList();
+    } catch (e) {}
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> updateTasksState(String listId) async {
-    //updateTasksStateApi(listId);
     updateTasksStateSqlite(listId);
+
+    //updateTasksStateApi(listId);
   }
 
   Future getLists() async {
