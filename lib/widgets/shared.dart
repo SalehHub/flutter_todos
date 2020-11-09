@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../utils/colors.dart';
 
 import '../main.dart';
+import '../utils/colors.dart';
 
 class SharedWidget {
   static Widget getCardHeader(
@@ -15,7 +15,7 @@ class SharedWidget {
     return Container(
       width: 85,
       alignment: AlignmentDirectional.center,
-      margin: EdgeInsets.only(left: 32,right:32),
+      margin: EdgeInsets.only(left: 32, right: 32),
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),

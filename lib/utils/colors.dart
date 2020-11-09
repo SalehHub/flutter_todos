@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:math';
+
+import 'package:flutter/material.dart';
 
 class TodosColor {
   static const kPrimaryColorCode = 0xff00802b;
@@ -11,8 +12,7 @@ class TodosColor {
 
   TodosColor._() {
     storedColors = List.generate(100, (pos) {
-      return Color.fromARGB(0xff - pos * 10, Random().nextInt(255),
-          Random().nextInt(255), Random().nextInt(255));
+      return Color.fromARGB(0xff - pos * 10, Random().nextInt(255), Random().nextInt(255), Random().nextInt(255));
     });
   }
 
@@ -31,7 +31,6 @@ class TodosColor {
     }
 
     // default case when need more than 100 colors
-    return Color.fromARGB(0xff - pos * 10, Random().nextInt(255),
-        Random().nextInt(255), Random().nextInt(255));
+    return Color.fromARGB(0xff - pos * 10, Random().nextInt(255), Random().nextInt(255), Random().nextInt(255));
   }
 }
