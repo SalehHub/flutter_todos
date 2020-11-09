@@ -78,7 +78,7 @@ class _TaskInputState extends State<TaskInput> {
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: Container(
-                    color:Colors.grey[700] ,
+                    color: Colors.grey[700],
                     child: Center(
                       child: CircularProgressIndicator(),
                     ),
