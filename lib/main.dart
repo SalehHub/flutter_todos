@@ -180,19 +180,10 @@ class _TodosPageState extends State<TodosPage> {
     }
     if (tasks != null) {
       for (Model.Todo td in tasks) {
-        print('-------------------');
-        print(td.id);
-        print('-------------------');
         try {
           await DBWrapper.sharedInstance.addTodo(td);
         } catch (e) {}
       }
-
-      //for (Model.Todo td in tasks) {
-      // try {
-      //  await DB.sharedInstance.updateTodo(td);
-      // } catch (e) {}
-      // }
     }
   }
 
@@ -247,10 +238,6 @@ class _TodosPageState extends State<TodosPage> {
   }
 
   Future<void> completeTask(Model.Todo todo) async {
-    print(todo.userId);
-    print(todo.userId);
-    print(todo.userId);
-    print(todo.userId);
     await DBWrapper.sharedInstance.markTodoAsDone(todo);
     api.completeTask(todo);
     getTasks(listId);

@@ -92,7 +92,7 @@ class GoogleTasksApi implements ApiInterface {
       'https://tasks.googleapis.com/tasks/v1/lists/$listId/tasks?showHidden=True&maxResults=100',
       headers: headers,
     );
-    print(response.body);
+    //print(response.body);
 
     ListDetails listDetails = ListDetails.fromJson(jsonDecode(response.body));
 
