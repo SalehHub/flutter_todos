@@ -9,17 +9,17 @@ import '../model/model.dart';
 const kTodosStatusActive = 'needsAction';
 const kTodosStatusDone = 'completed';
 
-const kDatabaseName = 'myTodos1.db';
+const kDatabaseName = 'myTodos6.db';
 const kDatabaseVersion = 1;
 const kSQLCreateStatement = '''
 CREATE TABLE "todos" (
-	 "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	 "id" TEXT NOT NULL PRIMARY KEY,
 	 "title" TEXT NOT NULL,
-	 "created" text NOT NULL,
-	 "updated" TEXT NOT NULL,
-	 "selfLink" TEXT UNIQUE,
+	 "created" TEXT,
+	 "updated" TEXT,
 	 "listId" TEXT NOT NULL,
 	 "position" TEXT,
+	 "userId" TEXT NOT NULL,
 	 "status" TEXT DEFAULT $kTodosStatusActive
 );
 ''';
@@ -46,7 +46,7 @@ class DB {
 
   Future createTodo(Todo todo) async {
     final db = await database;
-    await db.insert(kTableTodos, todo.toMapAutoID());
+    await db.insert(kTableTodos, todo.toMap());
   }
 
   Future updateTodo(Todo todo) async {
@@ -54,29 +54,26 @@ class DB {
     await db.update(kTableTodos, todo.toMap(), where: 'id=?', whereArgs: [todo.id]);
   }
 
-  Future updateTodoUsingSelfLink(Todo todo) async {
-    final db = await database;
-    await db.update(kTableTodos, todo.toMapAutoID(), where: 'selfLink=?', whereArgs: [todo.selfLink]);
-  }
-
   Future deleteTodo(Todo todo) async {
     final db = await database;
     await db.delete(kTableTodos, where: 'id=?', whereArgs: [todo.id]);
   }
 
-  Future deleteTodoUsingSelfLink(Todo todo) async {
+  Future deleteAllDoneTodos(String listId, {String status = kTodosStatusDone}) async {
     final db = await database;
-    await db.delete(kTableTodos, where: 'selfLink=?', whereArgs: [todo.selfLink]);
+    await db.delete(kTableTodos, where: 'status=? and listId=?', whereArgs: [status, listId]);
   }
 
-  Future deleteAllTodos({String status = kTodosStatusDone}) async {
+  Future deleteAllTodos(
+    String listId,
+  ) async {
     final db = await database;
-    await db.delete(kTableTodos, where: 'status=?', whereArgs: [status]);
+    await db.delete(kTableTodos, where: 'listId=?', whereArgs: [listId]);
   }
 
   Future<List<Todo>> retrieveTodos(String listId, {String status = kTodosStatusActive}) async {
     if (listId == null) {
-      listId = 'main';
+      listId = '@default';
     }
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(kTableTodos,
@@ -91,8 +88,8 @@ class DB {
         updated: DateTime.tryParse(maps[i]['updated']),
         status: maps[i]['status'],
         listId: maps[i]['listId'],
-        selfLink: maps[i]['selfLink'],
         position: maps[i]['position'],
+        userId: maps[i]['userId'],
       );
     });
     todos.sort();

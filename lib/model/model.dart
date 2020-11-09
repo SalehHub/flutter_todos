@@ -1,3 +1,7 @@
+import 'dart:math';
+
+import 'package:flutter/cupertino.dart';
+
 class Todo implements Comparable {
   @override
   int compareTo(other) {
@@ -7,39 +11,52 @@ class Todo implements Comparable {
     return -1;
   }
 
-  int id;
+  String id;
   String title;
-  String selfLink;
   DateTime created;
   DateTime updated;
   String status;
   String listId;
   String position;
+  String userId;
 
-  Todo({this.id, this.title, this.selfLink, this.created, this.updated, this.status, this.position, this.listId});
+  Todo({
+    @required this.id,
+    @required this.title,
+    this.created,
+    this.updated,
+    this.status,
+    this.position,
+    @required this.listId,
+    @required this.userId,
+  });
 
   Map<String, dynamic> toMap() {
+    var randomID = Random().nextInt(1000).toString() +
+        DateTime.now().microsecondsSinceEpoch.toString() +
+        listId.hashCode.toString() +
+        title.hashCode.toString();
     return {
-      'id': id,
+      'id': id ?? randomID,
       'title': title,
-      'selfLink': selfLink,
       'created': created.toString(),
       'updated': updated.toString(),
       'status': status,
       'position': position,
       'listId': listId,
+      'userId': userId,
     };
   }
 
-  Map<String, dynamic> toMapAutoID() {
-    return {
-      'title': title,
-      'selfLink': selfLink,
-      'created': created.toString(),
-      'updated': updated.toString(),
-      'status': status,
-      'position': position,
-      'listId': listId,
-    };
-  }
+  // Map<String, dynamic> toMapAutoID() {
+  //   return {
+  //     'title': title,
+  //     'selfLink': selfLink,
+  //     'created': created.toString(),
+  //     'updated': updated.toString(),
+  //     'status': status,
+  //     'position': position,
+  //     'listId': listId,
+  //   };
+  // }
 }

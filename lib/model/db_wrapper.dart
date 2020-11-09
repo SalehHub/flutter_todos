@@ -21,26 +21,30 @@ class DBWrapper {
     await DB.sharedInstance.createTodo(todo);
   }
 
-  void markTodoAsDone(Todo todo) async {
+  Future markTodoAsDone(Todo todo) async {
     todo.status = kTodosStatusDone;
     todo.updated = DateTime.now();
     await DB.sharedInstance.updateTodo(todo);
-    await DB.sharedInstance.updateTodoUsingSelfLink(todo);
+    //await DB.sharedInstance.updateTodoUsingSelfLink(todo);
   }
 
-  void markDoneAsTodo(Todo todo) async {
+  Future markDoneAsTodo(Todo todo) async {
     todo.status = kTodosStatusActive;
     todo.updated = DateTime.now();
     await DB.sharedInstance.updateTodo(todo);
-    await DB.sharedInstance.updateTodoUsingSelfLink(todo);
+    //await DB.sharedInstance.updateTodoUsingSelfLink(todo);
   }
 
-  void deleteTodo(Todo todo) async {
+  Future deleteTodo(Todo todo) async {
     await DB.sharedInstance.deleteTodo(todo);
-    await DB.sharedInstance.deleteTodoUsingSelfLink(todo);
+    //await DB.sharedInstance.deleteTodoUsingSelfLink(todo);
   }
 
-  void deleteAllDoneTodos() async {
-    await DB.sharedInstance.deleteAllTodos();
+  Future deleteAllDoneTodos(String listId) async {
+    await DB.sharedInstance.deleteAllDoneTodos(listId);
+  }
+
+  Future deleteAllTodos(String listId) async {
+    await DB.sharedInstance.deleteAllTodos(listId);
   }
 }
