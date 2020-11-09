@@ -5,8 +5,12 @@ import 'package:flutter/cupertino.dart';
 class Todo implements Comparable {
   @override
   int compareTo(other) {
-    if (position != null && other.position != null) {
+    if (position != null && other?.position != null) {
       return int.tryParse(position) > int.tryParse(other.position) ? 1 : -1;
+    } else {
+      if (created != null && other?.created != null) {
+        return created.microsecondsSinceEpoch < other.created.microsecondsSinceEpoch ? 1 : -1;
+      }
     }
     return -1;
   }
