@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_todos/api/api_interface.dart';
+import 'package:flutter_todos/api/empty_api.dart';
 
 import 'api/fire_store_api.dart';
 import 'api/google_tasks_api.dart';
@@ -56,7 +57,10 @@ class _TodosPageState extends State<TodosPage> {
     isAr = widget.isAr ?? false;
     listId = widget.listId ?? '@default';
     welcomeMsg = widget.title ?? (isAr ? 'مدير المهام' : 'Todo List');
-    if (widget.userFireStore == true) {
+
+    if (userId == null) {
+      api = EmptyApi();
+    } else if (widget.userFireStore == true) {
       assert(widget.fireStore != null);
       api = FireStoreApi(widget.fireStore);
     } else {
@@ -201,14 +205,19 @@ class _TodosPageState extends State<TodosPage> {
   Future<void> getTasksFromApi(String listId) async {
     List<Model.Todo> tasks = await api.getTasks(listId, userId);
     await updateSqliteData(tasks);
-    todos = tasks?.where((element) => element.status == kTodosStatusActive)?.toList();
-    todos?.sort();
 
-    dones = tasks?.where((element) => element.status == kTodosStatusDone)?.toList();
-    todos?.sort();
+    if (tasks == null || tasks.isEmpty == true) {
+      await getTasksFromSqlite(listId);
+    } else {
+      todos = tasks?.where((element) => element.status == kTodosStatusActive)?.toList();
+      todos?.sort();
 
-    if (mounted) {
-      setState(() {});
+      dones = tasks?.where((element) => element.status == kTodosStatusDone)?.toList();
+      todos?.sort();
+
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 

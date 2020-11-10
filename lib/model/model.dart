@@ -48,7 +48,7 @@ class Todo implements Comparable {
       'status': status,
       'position': position,
       'listId': listId,
-      'userId': userId,
+      'userId': userId ?? 'guest',
     };
   }
 
