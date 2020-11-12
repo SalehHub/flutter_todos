@@ -21,7 +21,7 @@ class _TaskInputState extends State<TaskInput> {
     return Container(
       child: Card(
         margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        color: Colors.grey[700],
+        color: cardColor,
         child: Stack(
           children: [
             Column(
@@ -37,13 +37,13 @@ class _TaskInputState extends State<TaskInput> {
                     Expanded(
                       child: TextFormField(
                         maxLines: null,
-                        style: TextStyle(color: Colors.white),
                         keyboardType: TextInputType.multiline,
                         decoration: InputDecoration(
-                            hintText: isAr ? 'اكتب المهمة هنا' : 'What do you want to do?',
-                            hintStyle: TextStyle(color: Colors.white),
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none),
+                          hintText: isAr ? 'اكتب المهمة هنا' : 'What do you want to do?',
+                          hintStyle: TextStyle(color: textColor),
+                          border: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                        ),
                         textInputAction: TextInputAction.newline,
                         controller: textEditingController,
                       ),

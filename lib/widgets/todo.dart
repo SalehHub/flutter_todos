@@ -37,7 +37,7 @@ class _TodoState extends State<Todo> {
       children: <Widget>[
         Card(
           margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          color: Colors.grey[800],
+          color: cardColor,
           child: Padding(
             padding: const EdgeInsets.only(bottom: 15.0),
             child: Column(
@@ -51,7 +51,7 @@ class _TodoState extends State<Todo> {
                         isAr
                             ? 'استخدم مربع النص بالأعلى للبدأ بإضافة المهام'
                             : 'Use the above text box to start adding new tasks',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: textColor),
                       ),
                     ),
                   ),
@@ -60,6 +60,7 @@ class _TodoState extends State<Todo> {
                     todo: widget.todos[i],
                     index: i,
                     onDeleteTask: widget.onDeleteTask,
+                    isLast: (i + 1) == widget?.todos?.length,
                     onTap: () async {
                       setState(() {
                         taskPosition = i;

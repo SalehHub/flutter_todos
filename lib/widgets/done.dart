@@ -24,7 +24,7 @@ class _DoneState extends State<Done> {
       children: <Widget>[
         Card(
           margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          color: Colors.grey[600],
+          color: cardColor,
           child: Padding(
             padding: const EdgeInsets.only(bottom: 15.0),
             child: Column(
@@ -41,6 +41,7 @@ class _DoneState extends State<Done> {
                   for (int i = (widget?.dones?.length ?? 0) - 1; i >= 0; --i)
                     TaskItem(
                       isDone: true,
+                      isLast: (i == 0),
                       todo: widget.dones[i],
                       index: i,
                       onDeleteTask: widget.onDeleteTask,

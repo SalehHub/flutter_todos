@@ -7,20 +7,22 @@ import '../model/model.dart' as Model;
 import '../utils/colors.dart';
 
 class TaskItem extends StatefulWidget {
-  const TaskItem(
-      {Key key,
-      @required this.todo,
-      @required this.index,
-      @required this.onDeleteTask,
-      @required this.onTap,
-      this.isDone: false})
-      : super(key: key);
+  const TaskItem({
+    Key key,
+    @required this.todo,
+    @required this.index,
+    @required this.onDeleteTask,
+    @required this.onTap,
+    this.isDone: false,
+    this.isLast: false,
+  }) : super(key: key);
 
   final Model.Todo todo;
   final int index;
   final Function onDeleteTask;
   final Function onTap;
   final bool isDone;
+  final bool isLast;
 
   @override
   _TaskItemState createState() => _TaskItemState();
@@ -77,13 +79,13 @@ class _TaskItemState extends State<TaskItem> {
                       if (widget.isDone)
                         Padding(
                           padding: const EdgeInsets.all(10.0),
-                          child: Icon(Icons.check),
+                          child: Icon(Icons.check, color: textColor),
                         ),
                       SizedBox(width: 5),
                       Expanded(
                         child: Container(
                           padding: EdgeInsets.only(left: 5, top: 15, right: 5, bottom: 15),
-                          child: Text(widget.todo.title, style: TextStyle(color: Colors.white)),
+                          child: Text(widget.todo.title, style: TextStyle(color: textColor)),
                         ),
                       ),
                     ],
@@ -91,7 +93,7 @@ class _TaskItemState extends State<TaskItem> {
                 ),
               ),
             ),
-            SizedBox(height: 0.5, child: Container(color: Colors.grey)),
+            if (!widget.isLast) SizedBox(height: 0.5, child: Container(color: Colors.grey)),
             SizedBox(height: 0),
           ],
         ),

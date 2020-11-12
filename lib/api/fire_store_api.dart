@@ -22,7 +22,7 @@ class FireStoreApi implements ApiInterface {
   Future<List<Model.Todo>> getTasks(String listId, String userId) async {
     String path = 'tasks/$userId/$listId';
     //print(path);
-    var data = await fireStore.collection(path).get();
+    var data = await fireStore.collection(path).orderBy('created', descending: true).get();
     var docs = data.docs;
     List<Model.Todo> todos = [];
 

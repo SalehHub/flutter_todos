@@ -14,6 +14,8 @@ import 'widgets/todo.dart';
 
 bool isAr = false;
 String listId = '@default';
+Color cardColor;
+Color textColor;
 
 class TodosPage extends StatefulWidget {
   final String title;
@@ -24,6 +26,8 @@ class TodosPage extends StatefulWidget {
   final String userId;
   final bool userFireStore;
   final bool userGoogleTasks;
+  final Color cardColor;
+  final Color textColor;
 
   const TodosPage({
     Key key,
@@ -35,6 +39,8 @@ class TodosPage extends StatefulWidget {
     this.userId,
     this.userFireStore: true,
     this.userGoogleTasks: false,
+    this.cardColor: Colors.black38,
+    this.textColor: Colors.white,
   }) : super(key: key);
 
   @override
@@ -54,6 +60,8 @@ class _TodosPageState extends State<TodosPage> {
   @override
   void initState() {
     userId = widget.userId;
+    cardColor = widget.cardColor;
+    textColor = widget.textColor;
     isAr = widget.isAr ?? false;
     listId = widget.listId ?? '@default';
     welcomeMsg = widget.title ?? (isAr ? 'مدير المهام' : 'Todo List');
