@@ -34,7 +34,7 @@ class _DoneState extends State<Done> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                     child: Center(
-                      child: Text(isAr ? 'لايوجد مهام منجزة' : 'No done tasks', style: TextStyle(color: Colors.white)),
+                      child: Text(isAr ? 'لايوجد مهام منجزة' : 'No done tasks', style: TextStyle(color: textColor)),
                     ),
                   ),
                 if (widget.dones != null && (widget?.dones?.length ?? 0) > 0)

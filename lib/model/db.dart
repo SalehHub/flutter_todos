@@ -15,7 +15,7 @@ const kSQLCreateStatement = '''
 CREATE TABLE "todos" (
 	 "id" TEXT NOT NULL PRIMARY KEY,
 	 "title" TEXT NOT NULL,
-	 "created" TEXT,
+	 "created" TEXT NOT NULL,
 	 "updated" TEXT,
 	 "listId" TEXT NOT NULL,
 	 "position" TEXT,
@@ -77,9 +77,8 @@ class DB {
     }
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(kTableTodos,
-        where: 'status=? and listId=?', whereArgs: [status, listId], orderBy: 'position ASC');
+        where: 'status=? and listId=?', whereArgs: [status, listId], orderBy: 'created ASC');
 
-    // Convert List<Map<String, dynamic>> to List<Todo_object>
     List<Todo> todos = List.generate(maps.length, (i) {
       return Todo(
         id: maps[i]['id'],

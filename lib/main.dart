@@ -243,6 +243,8 @@ class _TodosPageState extends State<TodosPage> {
         title: title,
         listId: listId,
         status: kTodosStatusActive,
+        created: DateTime.now(),
+        updated: DateTime.now(),
       );
       Model.Todo todo = await api.createTask(newTodo);
 
