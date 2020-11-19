@@ -6,7 +6,9 @@ import '../models.dart';
 class EmptyApi implements ApiInterface {
   Future<TasksList> getLists(String userId) => null;
 
-  Future<String> getMainListId(String userId, String listId, String listTitle) => null;
+  Future<String> getMainListId(String userId, String listId, String listTitle) {
+    return Future.value(listId.hashCode.toString());
+  }
 
   Future<List<Model.Todo>> getTasks(String listId, String userId) => null;
 

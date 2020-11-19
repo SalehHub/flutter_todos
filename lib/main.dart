@@ -29,7 +29,7 @@ class AppState extends ChangeNotifier {
 
   updateListData(List<ListData> _listData) {
     listData = _listData;
-    listData.removeWhere((e) => e.listId == '@default');
+    listData?.removeWhere((e) => e.listId == '@default');
     notifyListeners();
   }
 }
@@ -197,8 +197,7 @@ class _MainPageState extends State<MainPage> {
           } catch (e) {}
         }
       });
+      Provider.of<AppState>(context, listen: false).updateListData(_listData);
     }
-
-    Provider.of<AppState>(context, listen: false).updateListData(_listData);
   }
 }

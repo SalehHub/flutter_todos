@@ -43,7 +43,7 @@ class _TodoListPageState extends State<TodoListPage> {
         child: Consumer<AppState>(
           builder: (BuildContext context, AppState appState, Widget child) => ListView(children: [
             buildListCard(ListData('@default', '@default', DateTime.now())),
-            ...(appState.listData.map(buildListCard).toList()),
+            if (appState.listData != null) ...(appState.listData?.map(buildListCard)?.toList()),
           ]),
         ),
       ),
@@ -206,12 +206,12 @@ class _TodoListPageState extends State<TodoListPage> {
       await DBWrapper.sharedInstance.updateList(list);
       await getListFromSqlite();
 
-      api.updateList(userId, list.listId, name).then((value) async {
-        await getListFromFireStore();
-        if (mounted) {
-          setState(() => updating = false);
-        }
-      });
+      await api.updateList(userId, list.listId, name);
+      await getListFromFireStore();
+
+      if (mounted) {
+        setState(() => updating = false);
+      }
     }
   }
 
