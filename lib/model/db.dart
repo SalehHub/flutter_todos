@@ -10,7 +10,7 @@ import '../model/model.dart';
 const kTodosStatusActive = 'needsAction';
 const kTodosStatusDone = 'completed';
 
-const kDatabaseName = 'myTodos6.db';
+const kDatabaseName = 'myTodos1.db';
 const kDatabaseVersion = 1;
 const kSQLCreateStatement1 = '''
 CREATE TABLE "todos" (
