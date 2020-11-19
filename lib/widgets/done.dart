@@ -6,18 +6,18 @@ import '../utils/colors.dart';
 import 'shared.dart';
 import 'task_item.dart';
 
-class Done extends StatefulWidget {
+class DoneWidget extends StatefulWidget {
   final Function onTap;
   final Function onDeleteTask;
   final List<Model.Todo> dones;
 
-  Done({@required this.dones, this.onTap, this.onDeleteTask});
+  DoneWidget({@required this.dones, this.onTap, this.onDeleteTask});
 
   @override
-  _DoneState createState() => _DoneState();
+  _DoneWidgetState createState() => _DoneWidgetState();
 }
 
-class _DoneState extends State<Done> {
+class _DoneWidgetState extends State<DoneWidget> {
   @override
   Widget build(BuildContext context) {
     return Stack(

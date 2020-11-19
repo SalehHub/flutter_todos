@@ -1,12 +1,17 @@
 import '../model/model.dart' as Model;
-import '../models.dart';
 
 abstract class ApiInterface {
-  Future<TasksList> getLists();
+  Future<dynamic> getLists(String userId);
 
-  Future<String> getMainListId(String listId, String listTitle);
+  Future<String> getMainListId(String userId, String listId, String listTitle);
 
   Future<List<Model.Todo>> getTasks(String listId, String userId);
+
+  Future<bool> deleteList(String userId, String listId);
+
+  Future<String> createList(String userId, String listId, String listTitle);
+
+  Future<String> updateList(String userId, String listId, String newListTitle);
 
   Future<Model.Todo> createTask(Model.Todo todo);
 

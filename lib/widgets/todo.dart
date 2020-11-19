@@ -9,18 +9,18 @@ import 'task_item.dart';
 const int NoTask = -1;
 const int animationMilliseconds = 500;
 
-class Todo extends StatefulWidget {
+class TodoWidget extends StatefulWidget {
   final Function onTap;
   final Function onDeleteTask;
   final List<Model.Todo> todos;
 
-  Todo({@required this.todos, this.onTap, this.onDeleteTask});
+  TodoWidget({@required this.todos, this.onTap, this.onDeleteTask});
 
   @override
-  _TodoState createState() => _TodoState();
+  _TodoWidgetState createState() => _TodoWidgetState();
 }
 
-class _TodoState extends State<Todo> {
+class _TodoWidgetState extends State<TodoWidget> {
   int taskPosition = NoTask;
   bool showCompletedTaskAnimation = false;
   List<Widget> todosWidget = [];

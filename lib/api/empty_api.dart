@@ -4,11 +4,17 @@ import '../model/model.dart' as Model;
 import '../models.dart';
 
 class EmptyApi implements ApiInterface {
-  Future<TasksList> getLists() => null;
+  Future<TasksList> getLists(String userId) => null;
 
-  Future<String> getMainListId(String listId, String listTitle) => null;
+  Future<String> getMainListId(String userId, String listId, String listTitle) => null;
 
   Future<List<Model.Todo>> getTasks(String listId, String userId) => null;
+
+  Future<bool> deleteList(String userId, String listId) => null;
+
+  Future<String> createList(String userId, String listId, String listTitle) => null;
+
+  Future<String> updateList(String userId, String listId, String newListTitle) => null;
 
   Future<Model.Todo> createTask(Model.Todo todo) => Future.value(todo);
 

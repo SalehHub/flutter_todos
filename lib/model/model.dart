@@ -23,6 +23,7 @@ class Todo implements Comparable {
   String listId;
   String position;
   String userId;
+  String listTitle;
 
   Todo({
     @required this.id,
@@ -32,6 +33,7 @@ class Todo implements Comparable {
     this.status,
     this.position,
     @required this.listId,
+    @required this.listTitle,
     @required this.userId,
   });
 
@@ -48,6 +50,7 @@ class Todo implements Comparable {
       'status': status,
       'position': position,
       'listId': listId,
+      'listTitle': listTitle,
       'userId': userId ?? 'guest',
     };
   }

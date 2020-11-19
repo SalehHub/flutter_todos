@@ -39,7 +39,7 @@ class GoogleTasksApi implements ApiInterface {
     return headers;
   }
 
-  Future<TasksList> getLists() async {
+  Future<TasksList> getLists(String userId) async {
     Map<String, String> headers = await _getHeaders();
 
     Response response = await get(
@@ -53,7 +53,9 @@ class GoogleTasksApi implements ApiInterface {
     return tasksList;
   }
 
-  Future<String> _createList(String listId, String title) async {
+  Future<bool> deleteList(String userId, String listId) => null;
+
+  Future<String> createList(String userId, String listId, String title) async {
     Map<String, String> headers = await _getHeaders();
     var body = {"title": title};
     Response response = await post(
@@ -61,12 +63,14 @@ class GoogleTasksApi implements ApiInterface {
       headers: headers,
       body: jsonEncode(body),
     );
-    String listId = jsonDecode(response.body)['id'];
-    return listId;
+    String _listId = jsonDecode(response.body)['id'];
+    return _listId;
   }
 
-  Future<String> getMainListId(String listId, String listTitle) async {
-    TasksList tasksList = await getLists();
+  Future<String> updateList(String userId, String listId, String newListTitle) => null;
+
+  Future<String> getMainListId(String userId, String listId, String listTitle) async {
+    TasksList tasksList = await getLists(null);
 
     String mainListId;
 
@@ -79,7 +83,7 @@ class GoogleTasksApi implements ApiInterface {
       }
     }
     if (mainListId == null) {
-      mainListId = await _createList(listId, listTitle);
+      mainListId = await createList(userId, listId, listTitle);
     }
 
     return mainListId;
@@ -133,6 +137,7 @@ class GoogleTasksApi implements ApiInterface {
       position: '-1',
       userId: todo.userId,
       listId: todo.listId,
+      listTitle: todo.listTitle,
       created: DateTime.tryParse(task.updated),
       updated: DateTime.tryParse(task.updated),
     );

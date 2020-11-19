@@ -1,3 +1,27 @@
+class ListData implements Comparable {
+  String listId;
+  String listTitle;
+  DateTime date;
+
+  ListData(this.listId, this.listTitle, this.date);
+
+  @override
+  int compareTo(other) {
+    return date.difference(other.date).inMicroseconds;
+  }
+
+  @override
+  String toString() => "$listId: $listTitle";
+
+  Map<String, String> toMap() {
+    return {
+      'listId': listId,
+      'listTitle': listTitle,
+      'date': date.toIso8601String(),
+    };
+  }
+}
+
 class TasksList {
   String kind;
   String etag;

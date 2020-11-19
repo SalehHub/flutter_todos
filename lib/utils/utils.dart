@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../main.dart';
 import '../utils/colors.dart';
 
 enum kMoreOptionsKeys {
@@ -18,33 +20,26 @@ class Utils {
     FocusScope.of(context).requestFocus(new FocusNode());
   }
 
-  static void showCustomDialog(BuildContext context,
-      {String title, String msg, String noBtnTitle: 'Close', Function onConfirm, String confirmBtnTitle: 'Yes'}) {
+  static Future<bool> showCustomDialog(BuildContext context) {
     final dialog = AlertDialog(
-      title: Text(title),
-      content: Text(msg),
+      backgroundColor: cardColor,
+      title: Text(isAr ? 'هل أنت متأكد؟' : 'Are you sure?'),
+      content: Text(
+        isAr ? 'سيتم حذف جميع بيانات هذه القائمة!' : 'This will delete this todo list nd all of its items!',
+      ),
       actions: <Widget>[
-        if (onConfirm != null)
-          RaisedButton(
-            color: Color(TodosColor.kPrimaryColorCode),
-            onPressed: () {
-              onConfirm();
-              Navigator.pop(context);
-            },
-            child: Text(
-              confirmBtnTitle,
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
+        RaisedButton(
+          color: Color(TodosColor.kPrimaryColorCode),
+          onPressed: () => Navigator.pop(context, true),
+          child: Text(isAr ? 'نعم' : 'Yes', style: TextStyle(color: Colors.white)),
+        ),
         RaisedButton(
           color: Color(TodosColor.kSecondaryColorCode),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text(noBtnTitle, style: TextStyle(color: Colors.white)),
+          onPressed: () => Navigator.pop(context, false),
+          child: Text(isAr ? 'الغاء' : 'Cancel', style: TextStyle(color: Colors.white)),
         ),
       ],
     );
-    showDialog(context: context, builder: (x) => dialog);
+    return showDialog(context: context, builder: (x) => dialog);
   }
 }

@@ -42,19 +42,25 @@ class _TaskItemState extends State<TaskItem> {
               actionPane: SlidableScrollActionPane(),
               actionExtentRatio: 0.25,
               actions: <Widget>[
-                IconSlideAction(
-                  caption: isAr ? 'حذف' : 'DELETE',
-                  color: Colors.red,
-                  icon: Icons.delete,
-                  onTap: () async {
-                    setState(() {
-                      loading = true;
-                    });
-                    await widget.onDeleteTask(widget.todo);
-                    setState(() {
-                      loading = false;
-                    });
-                  },
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 3),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: IconSlideAction(
+                      caption: isAr ? 'حذف' : 'DELETE',
+                      color: Colors.red,
+                      icon: Icons.delete,
+                      onTap: () async {
+                        setState(() {
+                          loading = true;
+                        });
+                        await widget.onDeleteTask(widget.todo);
+                        setState(() {
+                          loading = false;
+                        });
+                      },
+                    ),
+                  ),
                 ),
               ],
               child: InkWell(
