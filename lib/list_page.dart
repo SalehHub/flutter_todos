@@ -116,6 +116,7 @@ class _TodoListPageState extends State<TodoListPage> {
 
   Widget buildListCard(ListData e) {
     return ClipRRect(
+      clipBehavior: Clip.antiAliasWithSaveLayer,
       child: Slidable(
         enabled: e.listId != '@default',
         actionPane: SlidableScrollActionPane(),

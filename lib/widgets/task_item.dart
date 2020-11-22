@@ -39,6 +39,7 @@ class _TaskItemState extends State<TaskItem> {
         Column(
           children: <Widget>[
             ClipRRect(
+              clipBehavior: Clip.antiAliasWithSaveLayer,
               child: Slidable(
                 actionPane: SlidableScrollActionPane(),
                 actionExtentRatio: 0.25,
