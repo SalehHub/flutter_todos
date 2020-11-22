@@ -38,63 +38,65 @@ class _TaskItemState extends State<TaskItem> {
       children: [
         Column(
           children: <Widget>[
-            Slidable(
-              actionPane: SlidableScrollActionPane(),
-              actionExtentRatio: 0.25,
-              actions: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 3),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: IconSlideAction(
-                      caption: isAr ? 'حذف' : 'DELETE',
-                      color: Colors.red,
-                      icon: Icons.delete,
-                      onTap: () async {
-                        setState(() {
-                          loading = true;
-                        });
-                        await widget.onDeleteTask(widget.todo);
-                        setState(() {
-                          loading = false;
-                        });
-                      },
+            ClipRRect(
+              child: Slidable(
+                actionPane: SlidableScrollActionPane(),
+                actionExtentRatio: 0.25,
+                actions: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 3),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                      child: IconSlideAction(
+                        caption: isAr ? 'حذف' : 'DELETE',
+                        color: Colors.red,
+                        icon: Icons.delete,
+                        onTap: () async {
+                          setState(() {
+                            loading = true;
+                          });
+                          await widget.onDeleteTask(widget.todo);
+                          setState(() {
+                            loading = false;
+                          });
+                        },
+                      ),
                     ),
                   ),
-                ),
-              ],
-              child: InkWell(
-                onTap: () async {
-                  setState(() {
-                    loading = true;
-                  });
-                  await widget.onTap();
-                  setState(() {
-                    loading = false;
-                  });
-                },
-                child: IntrinsicHeight(
-                  child: Row(
-                    children: <Widget>[
-                      if (!widget.isDone)
-                        Container(
-                          margin: EdgeInsets.only(top: 0),
-                          width: 5,
-                          decoration: BoxDecoration(color: TodosColor.sharedInstance.leadingTaskColor(widget.index)),
+                ],
+                child: InkWell(
+                  onTap: () async {
+                    setState(() {
+                      loading = true;
+                    });
+                    await widget.onTap();
+                    setState(() {
+                      loading = false;
+                    });
+                  },
+                  child: IntrinsicHeight(
+                    child: Row(
+                      children: <Widget>[
+                        if (!widget.isDone)
+                          Container(
+                            margin: EdgeInsets.only(top: 0),
+                            width: 5,
+                            decoration: BoxDecoration(color: TodosColor.sharedInstance.leadingTaskColor(widget.index)),
+                          ),
+                        if (widget.isDone)
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Icon(Icons.check, color: textColor),
+                          ),
+                        SizedBox(width: 5),
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.only(left: 5, top: 15, right: 5, bottom: 15),
+                            child: Text(widget.todo.title, style: TextStyle(color: textColor)),
+                          ),
                         ),
-                      if (widget.isDone)
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Icon(Icons.check, color: textColor),
-                        ),
-                      SizedBox(width: 5),
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.only(left: 5, top: 15, right: 5, bottom: 15),
-                          child: Text(widget.todo.title, style: TextStyle(color: textColor)),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

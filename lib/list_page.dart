@@ -115,58 +115,60 @@ class _TodoListPageState extends State<TodoListPage> {
   }
 
   Widget buildListCard(ListData e) {
-    return Slidable(
-      enabled: e.listId != '@default',
-      actionPane: SlidableScrollActionPane(),
-      actionExtentRatio: 0.25,
-      actions: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 5),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(5),
-            child: IconSlideAction(
-              caption: isAr ? 'حذف' : 'DELETE',
-              color: Colors.red,
-              icon: Icons.delete,
-              onTap: () async => await deleteList(e),
+    return ClipRRect(
+      child: Slidable(
+        enabled: e.listId != '@default',
+        actionPane: SlidableScrollActionPane(),
+        actionExtentRatio: 0.25,
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 5),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(5),
+              child: IconSlideAction(
+                caption: isAr ? 'حذف' : 'DELETE',
+                color: Colors.red,
+                icon: Icons.delete,
+                onTap: () async => await deleteList(e),
+              ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 5),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(5),
-            child: IconSlideAction(
-              caption: isAr ? 'تعديل' : 'Edit',
-              color: Colors.grey.shade400,
-              icon: Icons.edit,
-              onTap: () async => showUpdateListDialog(context, e),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 5),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(5),
+              child: IconSlideAction(
+                caption: isAr ? 'تعديل' : 'Edit',
+                color: Colors.grey.shade400,
+                icon: Icons.edit,
+                onTap: () async => showUpdateListDialog(context, e),
+              ),
             ),
           ),
-        ),
-      ],
-      child: Card(
-        color: cardColor,
-        margin: EdgeInsets.all(5),
-        child: Builder(
-          builder: (context) => InkWell(
-            borderRadius: BorderRadius.circular(5),
-            onTap: () {
-              print(e);
-              print(e);
-              print(e);
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (c) => ChangeNotifierProvider<AppState>.value(
-                    value: appState,
-                    builder: (context, child) => ListDetailsPage(listId: e.listId, listTitle: e.listTitle),
+        ],
+        child: Card(
+          color: cardColor,
+          margin: EdgeInsets.all(5),
+          child: Builder(
+            builder: (context) => InkWell(
+              borderRadius: BorderRadius.circular(5),
+              onTap: () {
+                print(e);
+                print(e);
+                print(e);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (c) => ChangeNotifierProvider<AppState>.value(
+                      value: appState,
+                      builder: (context, child) => ListDetailsPage(listId: e.listId, listTitle: e.listTitle),
+                    ),
                   ),
-                ),
-              );
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 20),
-              child: ListTile(leading: Icon(Icons.view_list), title: Text(getListTitle(e.listTitle))),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 20),
+                child: ListTile(leading: Icon(Icons.view_list), title: Text(getListTitle(e.listTitle))),
+              ),
             ),
           ),
         ),
