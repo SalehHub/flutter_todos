@@ -27,13 +27,15 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
 
   @override
   void initState() {
-    getMainListId();
+    getTodos();
     super.initState();
   }
 
-  Future getMainListId() async {
-    todos = await DBWrapper.sharedInstance.getTodos(widget.listId);
-    dones = await DBWrapper.sharedInstance.getDones(widget.listId);
+  Future getTodos() async {
+    await getTasksFromSqlite(widget.listId);
+
+    print(todos);
+    print(dones);
 
     if (todos?.isNotEmpty == true || dones?.isNotEmpty == true) {
       if (mounted) {
@@ -61,7 +63,7 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
         centerTitle: true,
         title: GestureDetector(
             onTap: () {
-              List<ListData> listData = Provider.of<AppState>(context, listen: false).listData;
+              //List<ListData> listData = Provider.of<AppState>(context, listen: false).listData;
             },
             child: Text(getListTitle(widget.listTitle), style: TextStyle(fontSize: 15))),
       ),
@@ -127,7 +129,9 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
       for (Model.Todo td in tasks) {
         try {
           await DBWrapper.sharedInstance.addTodo(td);
-        } catch (e) {}
+        } catch (e) {
+          print(e);
+        }
       }
     }
   }

@@ -174,19 +174,29 @@ class _MainPageState extends State<MainPage> {
       listId = await api.getMainListId(userId, listId, listId);
     }
     await getLists();
-
-    if (mounted) {
-      setState(() => loading = false);
-    }
   }
 
   Future getLists() async {
     List<ListData> _listData = await DBWrapper.sharedInstance.getLists();
     Provider.of<AppState>(context, listen: false).updateListData(_listData);
 
+    if (_listData != null && _listData?.isEmpty == false) {
+      if (mounted) {
+        setState(() => loading = false);
+      }
+    }
+
     _listData = await api.getLists(userId);
 
-    if (_listData != null && _listData.isEmpty == false) {
+    await syncWithFireStore(_listData);
+
+    if (mounted && loading == true) {
+      setState(() => loading = false);
+    }
+  }
+
+  Future syncWithFireStore(List<ListData> _listData) async {
+    if (_listData != null && _listData?.isEmpty == false) {
       await DBWrapper.sharedInstance.deleteAllLists();
       _listData?.forEach((element) async {
         try {
