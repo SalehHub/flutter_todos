@@ -43,7 +43,7 @@ class GoogleTasksApi implements ApiInterface {
     Map<String, String> headers = await _getHeaders();
 
     Response response = await get(
-      'https://tasks.googleapis.com/tasks/v1/users/@me/lists?maxResults=100',
+      Uri.tryParse('https://tasks.googleapis.com/tasks/v1/users/@me/lists?maxResults=100'),
       headers: headers,
     );
     //print(response.body);
@@ -59,7 +59,7 @@ class GoogleTasksApi implements ApiInterface {
     Map<String, String> headers = await _getHeaders();
     var body = {"title": title};
     Response response = await post(
-      'https://tasks.googleapis.com/tasks/v1/users/@me/lists',
+      Uri.tryParse('https://tasks.googleapis.com/tasks/v1/users/@me/lists'),
       headers: headers,
       body: jsonEncode(body),
     );
@@ -93,7 +93,7 @@ class GoogleTasksApi implements ApiInterface {
     Map<String, String> headers = await _getHeaders();
 
     Response response = await get(
-      'https://tasks.googleapis.com/tasks/v1/lists/$listId/tasks?showHidden=True&maxResults=100',
+      Uri.tryParse('https://tasks.googleapis.com/tasks/v1/lists/$listId/tasks?showHidden=True&maxResults=100'),
       headers: headers,
     );
     //print(response.body);
@@ -124,7 +124,7 @@ class GoogleTasksApi implements ApiInterface {
     Map<String, String> headers = await _getHeaders();
     var body = jsonEncode({"title": todo.title});
     Response response = await post(
-      'https://tasks.googleapis.com/tasks/v1/lists/${todo.listId}/tasks',
+      Uri.tryParse('https://tasks.googleapis.com/tasks/v1/lists/${todo.listId}/tasks'),
       headers: headers,
       body: body,
     );
@@ -147,7 +147,7 @@ class GoogleTasksApi implements ApiInterface {
     Map<String, String> headers = await _getHeaders();
     var body = jsonEncode({"status": "completed"});
     String url = 'https://www.googleapis.com/tasks/v1/lists/${todo.listId}/tasks/${todo.id}';
-    Response response = await patch(url, headers: headers, body: body);
+    Response response = await patch(Uri.tryParse(url), headers: headers, body: body);
     //print(response.body);
   }
 
@@ -155,14 +155,14 @@ class GoogleTasksApi implements ApiInterface {
     Map<String, String> headers = await _getHeaders();
     var body = jsonEncode({"status": "needsAction"});
     String url = 'https://www.googleapis.com/tasks/v1/lists/${todo.listId}/tasks/${todo.id}';
-    Response response = await patch(url, headers: headers, body: body);
+    Response response = await patch(Uri.tryParse(url), headers: headers, body: body);
     //print(response.body);
   }
 
   Future deleteTask(Model.Todo todo) async {
     Map<String, String> headers = await _getHeaders();
     String url = 'https://www.googleapis.com/tasks/v1/lists/${todo.listId}/tasks/${todo.id}';
-    Response response = await delete(url, headers: headers);
+    Response response = await delete(Uri.tryParse(url), headers: headers);
     //print(response.body);
   }
 }
