@@ -10,6 +10,7 @@ import 'api/google_tasks_api.dart';
 import 'list_page.dart';
 import 'model/db_wrapper.dart';
 import 'models.dart';
+import 'utils/utils.dart';
 
 bool isAr = false;
 String userId;
@@ -158,7 +159,7 @@ class _MainPageState extends State<MainPage> {
           centerTitle: true,
           title: Text((isAr ? 'مدير المهام' : 'Todo List')),
         ),
-        body: Center(child: CircularProgressIndicator()),
+        body: themedCircularProgressIndicator(isDark(context)),
       );
     }
     if (listId?.toLowerCase() == '@default') {

@@ -33,7 +33,7 @@ class _TodoListPageState extends State<TodoListPage> {
               ? Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Center(
-                    child: Container(width: 25, height: 25, child: Center(child: CircularProgressIndicator())),
+                    child: Container(width: 25, height: 25, child: themedCircularProgressIndicator(isDark(context))),
                   ),
                 )
               : IconButton(icon: Icon(Icons.add), onPressed: () => showCreateListDialog(context)),

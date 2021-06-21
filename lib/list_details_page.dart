@@ -89,7 +89,7 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
                               Positioned.fill(
                                 child: Padding(
                                   padding: const EdgeInsets.only(top: 45.0, bottom: 20, left: 10, right: 10),
-                                  child: Container(color: cardColor, child: Center(child: CircularProgressIndicator())),
+                                  child: Container(color: cardColor, child: themedCircularProgressIndicator(isDark(context))),
                                 ),
                               ),
                           ],
@@ -104,7 +104,7 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
                               Positioned.fill(
                                 child: Padding(
                                   padding: const EdgeInsets.only(top: 45.0, bottom: 20, left: 10, right: 10),
-                                  child: Container(color: cardColor, child: Center(child: CircularProgressIndicator())),
+                                  child: Container(color: cardColor, child: themedCircularProgressIndicator(isDark(context))),
                                 ),
                               ),
                           ],

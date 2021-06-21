@@ -48,9 +48,7 @@ class _TodoWidgetState extends State<TodoWidget> {
                     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                     child: Center(
                       child: Text(
-                        isAr
-                            ? 'استخدم مربع النص بالأعلى للبدأ بإضافة المهام'
-                            : 'Use the above text box to start adding new tasks',
+                        isAr ? 'استخدم مربع النص بالأعلى للبدأ بإضافة المهام' : 'Use the above text box to start adding new tasks',
                         style: TextStyle(color: textColor),
                       ),
                     ),

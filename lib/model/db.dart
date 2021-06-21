@@ -102,8 +102,7 @@ class DB {
       listId = '@default';
     }
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(kTableTodos,
-        where: 'status=? and listId=?', whereArgs: [status, listId], orderBy: 'created ASC');
+    final List<Map<String, dynamic>> maps = await db.query(kTableTodos, where: 'status=? and listId=?', whereArgs: [status, listId], orderBy: 'created ASC');
 
     List<Todo> todos = List.generate(maps.length, (i) {
       return Todo(

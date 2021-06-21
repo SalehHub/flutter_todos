@@ -5,6 +5,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../main.dart';
 import '../model/model.dart' as Model;
 import '../utils/colors.dart';
+import '../utils/utils.dart';
 
 class TaskItem extends StatefulWidget {
   const TaskItem({
@@ -112,7 +113,7 @@ class _TaskItemState extends State<TaskItem> {
               padding: const EdgeInsets.all(0.0),
               child: Container(
                 color: widget.isDone ? Colors.grey[600] : Colors.grey[800],
-                child: Center(child: CircularProgressIndicator()),
+                child: themedCircularProgressIndicator(isDark(context)),
               ),
             ),
           ),

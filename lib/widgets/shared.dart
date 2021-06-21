@@ -4,12 +4,7 @@ import '../main.dart';
 import '../utils/colors.dart';
 
 class SharedWidget {
-  static Widget getCardHeader(
-      {@required BuildContext context,
-      @required String text,
-      Color textColor = Colors.white,
-      int backgroundColorCode = TodosColor.kPrimaryColorCode,
-      double customFontSize}) {
+  static Widget getCardHeader({@required BuildContext context, @required String text, Color textColor = Colors.white, int backgroundColorCode = TodosColor.kPrimaryColorCode, double customFontSize}) {
     customFontSize ??= Theme.of(context).textTheme.headline6.fontSize;
 
     return Container(

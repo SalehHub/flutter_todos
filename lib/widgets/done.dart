@@ -53,11 +53,7 @@ class _DoneWidgetState extends State<DoneWidget> {
             ),
           ),
         ),
-        SharedWidget.getCardHeader(
-            context: context,
-            text: isAr ? 'المنجزة' : 'DONE',
-            backgroundColorCode: TodosColor.kSecondaryColorCode,
-            customFontSize: 16),
+        SharedWidget.getCardHeader(context: context, text: isAr ? 'المنجزة' : 'DONE', backgroundColorCode: TodosColor.kSecondaryColorCode, customFontSize: 16),
       ],
     );
   }

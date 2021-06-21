@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../main.dart';
 import '../utils/colors.dart';
+import '../utils/utils.dart';
 
 class TaskInput extends StatefulWidget {
   final Function onSubmitted;
@@ -79,9 +80,7 @@ class _TaskInputState extends State<TaskInput> {
                   padding: const EdgeInsets.all(5.0),
                   child: Container(
                     color: cardColor,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                    child: themedCircularProgressIndicator(isDark(context)),
                   ),
                 ),
               )

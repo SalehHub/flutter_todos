@@ -3,6 +3,15 @@ import 'package:flutter/material.dart';
 import '../main.dart';
 import '../utils/colors.dart';
 
+const AlwaysStoppedAnimation<Color> darkerGrayValueColor = AlwaysStoppedAnimation<Color>(Color(0xff414141));
+const AlwaysStoppedAnimation<Color> whiteValueColor = AlwaysStoppedAnimation<Color>(Colors.white);
+
+bool isDark(context) => Theme.of(context).brightness == Brightness.dark;
+
+Widget themedCircularProgressIndicator(bool isDark) {
+  return Center(child: CircularProgressIndicator(valueColor: isDark ? whiteValueColor : darkerGrayValueColor));
+}
+
 enum kMoreOptionsKeys {
   clearAll,
 }

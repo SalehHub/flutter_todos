@@ -38,10 +38,7 @@ class Todo implements Comparable {
   });
 
   Map<String, dynamic> toMap() {
-    var randomID = Random().nextInt(1000).toString() +
-        DateTime.now().microsecondsSinceEpoch.toString() +
-        listId.hashCode.toString() +
-        title.hashCode.toString();
+    var randomID = Random().nextInt(1000).toString() + DateTime.now().microsecondsSinceEpoch.toString() + listId.hashCode.toString() + title.hashCode.toString();
     return {
       'id': id ?? randomID,
       'title': title,
